@@ -20,6 +20,10 @@
 > 即「有 Tensor Core 时 fp16 更耐受大 M」，与 GTX 1650 上的表现完全相反。
 >
 > 复现：`cloud_vllm_verify.ipynb` / `gemm_cliff.py`，Colab T4 一键运行。
+>
+> **已上报上游：**
+> - PyTorch（根因所在）：https://github.com/pytorch/pytorch/issues/195716
+> - vLLM（部署陷阱与告警建议）：https://github.com/vllm-project/vllm/issues/54950
 
 
 在一张 **GTX 1650（4 GiB，Turing sm_75，无 Tensor Core）** 上把 vLLM 0.28.0 跑起来，
