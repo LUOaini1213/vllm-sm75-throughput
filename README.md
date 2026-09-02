@@ -204,10 +204,22 @@ bash _exp_dtype.sh float32 1024 fp32
 
 ---
 
-## 附：前缀复用
+## 附：前缀复用（已在 T4 上完成受控对照）
 
-`--enable-prefix-caching` 下 2380 字符共享 system prompt 的对照，
-在 fp16 配置上未观察到 TTFT 改善（321 ms → 499 ms）。
-考虑到该配置本身处于上述 GEMM 塌陷状态，prefill 的收益被解码侧的瓶颈完全淹没，
-这组数据**不足以评价前缀复用本身**。要得到有意义的结论，
-需在 fp32 配置下、并对照关闭 `--enable-prefix-caching` 重测。**留作待办。**
+本地 GTX 1650 那组数据因处于 fp16 GEMM 塌陷状态而**判定无效** —— 解码侧瓶颈把
+prefill 的差异完全淹没了。已在 Colab T4（fp16 正常）重做，除 `--enable-prefix-caching`
+外两次配置完全一致：
+
+| 场景 | 开 prefix-caching | 关 prefix-caching |
+|---|---|---|
+| 无共享前缀（对照） | 1225.4 tok/s ・ 57.9 ms | 1009.5 tok/s ・ 60.8 ms |
+| **共享前缀 2380 字符** | 989.5 tok/s ・ **79.4 ms** | 967.5 tok/s ・ **122.5 ms** |
+
+- **TTFT 降低 43.1 ms（−35%）**，吞吐仅 +2.3%（噪声量级）。
+- 收益出现在 TTFT 而非吞吐，与原理一致：命中 KV cache 省掉的是重复 **prefill**，
+  decode 阶段的工作量并未减少。
+- 「无共享前缀」两组相差 <3 ms，说明上面 43 ms 的差值来自该特性本身而非运行间噪声。
+- 幅度受限于本配置（0.5B 模型 prefill 本就便宜、前缀仅 2380 字符）；
+  前缀更长或模型更大时收益应更显著，**但本轮未测，不作外推**。
+
+原始数据：[`results_t4/t4_serving_and_prefix.txt`](results_t4/t4_serving_and_prefix.txt)
