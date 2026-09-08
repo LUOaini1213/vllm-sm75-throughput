@@ -57,7 +57,9 @@ def mask_strings(src, tree):
             b = offs[node.end_lineno - 1] + node.end_col_offset
             for k in range(a, min(b, len(buf))):
                 if buf[k] != chr(10):
-                    buf[k] = " "
+                    # 用字母而非空格：合法拼接 "x" + f() + "y" 抹完仍是 S + f() + S，
+                    # 而被吃掉字符串的残骸是 ( + name + )，两者才区分得开。
+                    buf[k] = "S"
     return "".join(buf)
 
 

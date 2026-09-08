@@ -266,8 +266,17 @@ vLLM 几乎不收费（TTFT 49.2 → 48.3 ms），**SGLang 要付 45% 的 TTFT �
 | 8 | 419.6 | 787.2 (1.88×) | 761.2 (1.81×) |
 | 32 | 1163.3 | 1703.9 (1.46×) | 1706.8 (1.47×) |
 
-前提（sm_75 确无 Marlin，第 0 节实测确认）对，**推论错**——我默认了 kernel 效率是瓶颈却没验证。
 原始预测原文保留在结果文件里，没有事后修改。
+
+**（2026-09-07 追加更正）连前提都是错的。** 当时复盘写的是「前提对、推论错」，查上游后发现前提也不成立：
+vLLM **PR #29901「add marlin kernel support for turing (sm75)」2025-12-16 已合并**
+（Turing 无 `cp.async` 改同步加载、`m16n8k8` 叠两次模拟 `m16n8k16`、改用 FP16 累加器），
+v0.28.0 `marlin_utils.py` 的门槛是 `if device_capability < 75: return []` —— **sm_75 在支持范围内**。
+
+但不过度更正：**「源码支持」不等于「那次运行真的选了 Marlin」**，那次的启动日志没留存，无法回查。
+待跑的 notebook 会把启动日志里含 marlin / kernel 的行原样打出来，届时才有结论。
+这也意味着 roofline 那轮「残差指向反量化开销」的推断要保留不确定性：走 Marlin（融合反量化）
+与走 Exllama（反量化 + cuBLAS）时，残差的含义完全不同。
 
 值得单独讲的取舍：**TPOT 腰斩**（14.89 → 7.7 ms）、**KV cache +13%**，
 **但 TTFT 反而变差**（55.2 → 65~69 ms）—— 量化省的是权重读取，prefill 计算量没变、
@@ -334,15 +343,42 @@ batch > 8 没有图可用、回落 eager，**每 token 解码延迟一步跳约 
 
 **未完成**：默认 flashinfer 后端那组服务 420s 内没起来，**不能声称结论适用于默认路径**。
 
-**证据强度**：目前建立在「日志写明 `bs=[1,2,4,8]`」+「TPOT 台阶恰在 8 之后」两条吻合上，
-属**强关联**，不是因果实证。可证伪的下一步：提高 `--cuda-graph-max-bs`，台阶应当右移。
-**本仓尚未跑这一步。**
+**（2026-09-07 追加更正）上限为什么是 8：不是显存不够，是档位表。**
+结果文件里原先写的是「捕获范围被显存卡死：`avail mem=1.91 GB`」，**这个归因是错的**。
+SGLang v0.5.19 `python/sglang/srt/arg_groups/memory_hook.py` 按 **GPU 总显存**分档硬编码：
+
+```python
+if gpu_mem < 20 * 1024:
+    # T4, 4080
+    # (chunked_prefill_size 2k, max_bs 8)
+    ...
+    if decode_cuda_graph_config.max_bs is None:
+        decode_cuda_graph_config.max_bs = 8
+elif gpu_mem < 35 * 1024:   # A10, 4090, 5090  → 24
+elif gpu_mem < 60 * 1024:   # A100(40GB), L40  → 32
+elif gpu_mem < 90 * 1024:   # H100, A100       → 256
+```
+
+T4 是 15360 MiB，落在第一档，源码注释直接写着 `# T4, 4080`。该文件里**没有**任何按运行时可用显存
+下调 `max_bs` 的逻辑，`avail mem=1.91 GB` 只是捕获前的快照。候选桶表
+（`cuda_graph_hook.py::generate_decode_cuda_graph_batch_sizes`，`[1,2,4,8,12]+range(16,257,8)+...`）
+再按 `bs <= max_bs` 过滤，于是得到 `[1,2,4,8]`。
+
+**证据强度**：现在有三条吻合 —— 日志写明 `bs=[1,2,4,8]`、TPOT 台阶恰在 8 之后、源码档位表把 T4 钉为 8。
+**三条吻合仍然不是因果实证。** 干预实验（关掉解码图 / 把上限抬到 32 / 在 vLLM 上把捕获桶砍到 `[1,2,4,8]`
+反向复现）**尚未跑出结果**，在跑出来之前不说「已证实」。
+
+顺带更正参数名：v0.5.19 里 `--disable-cuda-graph` / `--cuda-graph-max-bs` 已是弃用别名，
+正式名为 `--cuda-graph-backend-decode {full,breakable,tc_piecewise,disabled}` 与 `--cuda-graph-max-bs-decode`。
+旧的 `--disable-cuda-graph` 会**同时关掉 prefill 图**，作为对照组会引入混杂变量。
 
 → [`results_t4/dip_rootcause_2026-09-05.txt`](results_t4/dip_rootcause_2026-09-05.txt)
+→ 两条更正的完整依据：[`results_t4/corrections_2026-09-07.txt`](results_t4/corrections_2026-09-07.txt)
+（旧结果文件一律不改、留档，更正另立新文件）
 
 ## 复现
 
-六份 notebook 可直接在 Colab（T4）打开跑，每份第 1 节都列了该框架的环境阻塞与修法：
+八份 notebook 可直接在 Colab（T4）打开跑（最后两份已写好、已自检，**尚未跑出结果**），每份第 1 节都列了该框架的环境阻塞与修法：
 
 | notebook | 做什么 |
 |---|---|
@@ -352,6 +388,8 @@ batch > 8 没有图可用、回落 eager，**每 token 解码延迟一步跳约 
 | `cloud_roofline_decode.ipynb` | 带宽屋顶检验 |
 | `cloud_sglang_repeat.ipynb` | 离群值重复 3 轮 |
 | `cloud_dip_rootcause.ipynb` | 凹陷根因四实验 |
+| `cloud_dip_confirm.ipynb` | CUDA graph 根因的**因果实证**（默认 / 关解码图 / 上限抬到 32），**待跑** |
+| `cloud_cross_vllm_graph.ipynb` | 在 vLLM 上反向复现同一机制 + 核对 Marlin 前提，**待跑** |
 
 `tools_check_notebooks.py` 是配套的 notebook 静态检查，六条规则各对应一次真实踩坑
 （嵌套引号吞掉字符串、非法 `%` 格式符、正则缺捕获组配 `group(1)`、循环里的宽 `except` 等）。

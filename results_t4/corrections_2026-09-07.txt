@@ -1,0 +1,128 @@
+两条已发布结论的更正 —— 依据是上游源码，不是新实验
+更正于 2026-09-07。旧文件一律不改（留档），以本文件为准。
+
+本文件不含任何新测量数据。它只做一件事：把此前结果文件里两条
+**与上游源码不符的表述**改过来，并说明改到什么程度为止。
+
+================================================================
+更正一：SGLang 只捕获 bs=[1,2,4,8] 的原因不是「显存不够」
+================================================================
+【被更正的原文】
+  results_t4/dip_rootcause_2026-09-05.txt 第 34 行：
+    「捕获范围被显存卡死：`avail mem=1.91 GB`（0.5B 模型 + mem-fraction-static 0.80 之后的余量）。」
+  同文件第 71 行：
+    「受限于显存（avail mem 1.91 GB），可能需要同时下调 `--mem-fraction-static` 腾空间。」
+
+【实际原因】
+  SGLang v0.5.19 源码 python/sglang/srt/arg_groups/memory_hook.py 按 **GPU 总显存**
+  分档硬编码解码图上限，与运行时可用显存无关。原文：
+
+    if gpu_mem < 20 * 1024:
+        # T4, 4080
+        # (chunked_prefill_size 2k, max_bs 8)
+        ...
+        if decode_cuda_graph_config.max_bs is None:
+            decode_cuda_graph_config.max_bs = 8
+    elif gpu_mem < 35 * 1024:
+        # A10, 4090, 5090        → max_bs 24（tp<4）
+    elif gpu_mem < 60 * 1024:
+        # A100 (40GB), L40       → max_bs 32（tp<4）
+    elif gpu_mem < 90 * 1024:
+        # H100, A100             → max_bs 256（tp<4）
+
+  T4 是 15360 MiB，落在第一档，源码注释直接写着「T4, 4080」。
+  该文件中没有任何「按运行时可用显存下调 max_bs」的逻辑。
+
+  候选桶表在 arg_groups/cuda_graph_hook.py 的
+  generate_decode_cuda_graph_batch_sizes()：
+    [1, 2, 4, 8, 12] + range(16, 257, 8) + range(272, 512, 16) + range(512, max_bs+1, 32)
+  再按 `bs <= max_bs` 过滤 → T4 上得到 [1, 2, 4, 8]，与日志一致。
+
+  所以日志里的 `avail mem=1.91 GB` 只是捕获前的显存快照，**不是限制原因**。
+
+【这条更正改变了什么】
+  1. 台阶的**现象与位置**不变（batch 8→10，TPOT 6.23 → 29.76 ms）。
+  2. 台阶的**机制**不变（batch > 捕获上限 → 无图可用 → 回落 eager）。
+  3. 变的是**上限为什么是 8**：不是显存不够，是档位表的硬编码默认值。
+  4. 因果实验的设计也跟着变：原计划的 C 组「--cuda-graph-max-bs 32 + 下调
+     --mem-fraction-static 到 0.60」是**两个变量一起动**，现已改为只加
+     --cuda-graph-max-bs-decode 32，其余与 A 组完全相同。
+
+【顺带更正参数名】
+  v0.5.19 里 --disable-cuda-graph / --cuda-graph-max-bs 已是弃用别名（仍可用会警告），
+  正式名是 --cuda-graph-backend-decode {full,breakable,tc_piecewise,disabled}
+  与 --cuda-graph-max-bs-decode。旧的 --disable-cuda-graph 会同时关掉 prefill 图，
+  作为对照组会引入混杂变量，因果 notebook 已改用 --cuda-graph-backend-decode disabled。
+
+【证据强度没有变，仍是强关联】
+  现在有三条吻合：日志写明 bs=[1,2,4,8]、TPOT 台阶恰在 8 之后、源码档位表把 T4 钉为 8。
+  **三条吻合仍然不是因果实证。** 关图 / 抬上限 / 在 vLLM 上把捕获桶砍到 8 反向复现
+  这三组干预实验**尚未跑出结果**。在跑出来之前，不得说「已证实」。
+
+================================================================
+更正二：「T4 无 Marlin」这个前提本身是错的
+================================================================
+【被更正的原文】
+  results_t4/quant_fp16_awq_gptq_2026-09-05.txt 第 2 行：
+    「Colab Tesla T4 (sm_75, 15360 MiB, 无 Marlin)」
+  同文件第 19 行：
+    「「T4 无 Marlin」这个前提是对的（notebook 第 0 节实测打印确认 compute capability 7.5）。
+      错的是推论：我默认了「kernel 效率」是瓶颈，但没有验证这个前提。」
+  results_t4/roofline_decode_2026-09-05.txt 第 8 行同样引用了这个前提。
+
+【实际情况】
+  1. vLLM PR #29901「[Kernel][Quantization][MoE] add marlin kernel support for
+     turing (sm75)」由 jinzhen-lin 提交，**2025-12-16 已合并**。PR 正文说明了
+     Turing 的三个限制各自怎么绕过：无 cp.async 改用同步指令读全局内存写共享内存；
+     无 m16n8k16 就把 m16n8k8 叠两次；Turing 上 FP32 累加器吞吐只有一半，故改用 FP16 累加器。
+     支持权重 GPTQ / AWQ / FP8 / NVFP4，激活 FP16 / INT8。
+  2. vLLM v0.28.0 源码 marlin_utils.py 的 query_marlin_supported_quant_types：
+       if device_capability < 75:
+           return []
+     即门槛是 **>= 75**，sm_75 在支持范围内。
+
+  所以「sm_75 < sm_80 所以没有 Marlin」这句话对 vLLM 0.28.0 不成立。
+  那轮复盘写的「前提对、推论错」，**前提这一半也要划掉**。
+
+【但是，没有过度更正】
+  ⚠️ 「源码支持 Marlin」≠「那次运行实际选了 Marlin」。
+  实际用了哪个 kernel，只能从启动日志读（看是否出现 marlin 字样，或
+  「Falling back to unoptimized AWQ kernels」）。**那次运行的日志没有留存，
+  现在无法回查。** 因此：
+    - 可以说：前提与 0.28.0 源码不符，这条前提站不住。
+    - 不能说：那 1.9× 就是 Marlin 跑出来的。
+  待跑的 cloud_cross_vllm_graph.ipynb 第 7 节会起一次 GPTQ-Int4 与 AWQ 服务，
+  把日志里含 marlin / kernel / quantization 的行原样打出来，届时才有结论。
+
+【这条更正改变了什么】
+  1. 实测数据（1.88× / 1.47× / TPOT 14.89→7.7ms / TTFT 变差）**全部不变**。
+  2. 「预测被推翻」这件事**不变**，而且性质更重了：不只是推论错，前提也错。
+  3. roofline 那轮的结论**不受影响**——它检验的是「解码受权重带宽主导」，
+     用的是实测带宽与权重字节，与 kernel 是不是 Marlin 无关。
+  4. 但 roofline 里「残差指向反量化开销」这条推断需要重新表述：
+     若走的是 Marlin（融合反量化），残差的解释与走 Exllama（反量化 + cuBLAS）
+     完全不同。**在确认 kernel 之前，这条推断的措辞要保留不确定性。**
+
+================================================================
+另外两条口径补记（不是错误，是之前没写明）
+================================================================
+1. vLLM 0.28 的默认 max_num_batched_tokens 已由 8192 提到 **16384**
+   （PR #51726，2026-08-11 合并）。本仓所有 vLLM 曲线都是在这个默认下测的，
+   此前未写明。
+2. vLLM 的 async scheduling 自 PR #27614（2025-12-29）起**默认开启**。
+   同上，此前未写明；后续做 --enforce-eager 对照时要在日志里确认它的状态，
+   否则是混杂变量。
+3. vLLM 官方压测文档警告：对同一服务器重复跑会复用残留前缀缓存而虚高吞吐。
+   本仓 results_t4/sglang_outliers_repeat_2026-09-05.txt 的三轮**打的是同一个
+   服务实例**（当时是有意为之，为了隔离启动差异）。这一点应写进那份文件的边界；
+   重测时每轮重启或 flush。
+
+================================================================
+方法上的一句话
+================================================================
+这两条更正都不是新实验查出来的，是去读上游源码查出来的。
+第一条把「我以为的资源限制」换成了「框架的硬编码默认值」，
+第二条把「我以为的硬件限制」换成了「过时的认知」。
+两条的共同点：**当时都没去读源码，而是从症状反推原因，然后当成前提写进了结论。**
+（同一个毛病此前已犯过一次：把 SGLang 的四个依赖阻塞归因为 flashinfer JIT，
+ 实测证明四个都与 flashinfer 无关。）
