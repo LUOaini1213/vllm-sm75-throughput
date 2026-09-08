@@ -430,6 +430,7 @@ T4 是 15360 MiB，落在第一档，源码注释直接写着 `# T4, 4080`。该
 | `cloud_sglang_repeat.ipynb` | 离群值重复 3 轮 |
 | `cloud_dip_rootcause.ipynb` | 凹陷根因四实验 |
 | `cloud_dip_confirm.ipynb` | CUDA graph 根因的**因果实证**（默认 / 关解码图 / 上限抬到 32）+ 补跑默认后端 |
+| `cloud_dip_confirm_executed.ipynb` | 同上，**带 2026-09-08 那次的真实输出**（四组启动日志、捕获的 bs 列表、逐档 TPOT） |
 | `cloud_cross_vllm_graph.ipynb` | 在 vLLM 上反向复现同一机制 + 核对 Marlin 前提，**待跑** |
 
 ## 下一步
