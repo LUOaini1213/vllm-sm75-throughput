@@ -1,0 +1,4 @@
+# results_local/ 里那份 JSON 是原样收录的原始产物，它的 sha256 记在
+# results_local/README.md 里、并由 check_claims.py 在 CI 里核。
+# 不能让 checkout 改行尾，否则校验和对不上。
+results_local/*.json -text
