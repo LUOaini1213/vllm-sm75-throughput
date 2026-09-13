@@ -1,0 +1,28 @@
+name: CI
+
+# 这仓的测量全在 Colab T4 上做，GPU 那部分进不了 CI。
+# 能进 CI 的是另一半：把结果文件与 notebook 输出解析回来，
+# 逐个回算 README 里的数字。三步全是纯标准库，不装任何依赖。
+on:
+  push:
+  pull_request:
+  workflow_dispatch:
+
+jobs:
+  verify:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: 编译全部 .py
+        run: python -m compileall -q .
+
+      - name: notebook 静态检查（六条规则，量仓内全部 notebook）
+        run: python tools_check_notebooks.py
+
+      - name: 回算 README 里的每个数字
+        run: python check_claims.py
