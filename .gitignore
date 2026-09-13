@@ -1,0 +1,8 @@
+# `python -m compileall -q .` is the first CI step, and it is also what anyone
+# reproducing the checks locally runs first. Without this, that step leaves six
+# untracked .pyc files behind and the next `git add -A` commits them.
+__pycache__/
+*.py[cod]
+
+# Notebook checkpoints, for the same reason: the repro path opens the notebooks.
+.ipynb_checkpoints/
