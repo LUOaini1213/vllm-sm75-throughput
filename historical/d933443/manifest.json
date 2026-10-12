@@ -1,0 +1,139 @@
+{
+  "schema_version": 1,
+  "source_commit": "d93344334567f7292099e6b7f1d661fee5f5f7b5",
+  "purpose": "Historical audit only. These frozen script bytes do not validate the revised runtime or prove historical measurements were affected.",
+  "snapshots": [
+    {
+      "path": "historical/d933443/bench_serving.py.txt",
+      "original_path": "bench_serving.py",
+      "sha256": "ef5bf10717ecdacfbc91bd499545a3cb363080eed30fba6fb6d97a782ae3df36"
+    },
+    {
+      "path": "historical/d933443/quick_bench.py.txt",
+      "original_path": "quick_bench.py",
+      "sha256": "50304c7045d3d24678300988979b05eb06afd1973d5763cf08e3ff4c8df81947"
+    }
+  ],
+  "unchanged_files": [
+    {
+      "path": "LICENSE",
+      "sha256": "805660fb953144912ccb7a9180df022c6bb525561ee75e7336fb836a0802d010"
+    },
+    {
+      "path": "cloud_cross_vllm_graph.ipynb",
+      "sha256": "c222dc7e4ef4dd5969322028ff93dbdea2c06109e763d3d639a9bae7f37dbca2"
+    },
+    {
+      "path": "cloud_dip_confirm.ipynb",
+      "sha256": "5c0c8b46eebee21d8e0bed0587d492d88f740cf7b89e2b45203525cbb2b16185"
+    },
+    {
+      "path": "cloud_dip_confirm_executed.ipynb",
+      "sha256": "dc3e9400e87a08e612511bf377eefb55986455dea8d883c069ff81540990ef21"
+    },
+    {
+      "path": "cloud_dip_rootcause.ipynb",
+      "sha256": "178aed64378c6394f907c419e8efaa371a25a9eb97dd4a5598fff7e268e161c0"
+    },
+    {
+      "path": "cloud_quant_matrix.ipynb",
+      "sha256": "3d1902fee6037f034abb24b56d02bafe7c6deee39695d570ca06283374d4315b"
+    },
+    {
+      "path": "cloud_roofline_decode.ipynb",
+      "sha256": "866c2ff881fcdc3358be9a9a909481ef4261464a4506e6d275b9c77924affd05"
+    },
+    {
+      "path": "cloud_sglang_repeat.ipynb",
+      "sha256": "6405f9050969bc6df4f0ce3bafaaae649d9a2e4e9479a919ee51a239c9f0f727"
+    },
+    {
+      "path": "cloud_sglang_v2.ipynb",
+      "sha256": "f0e51a9fb20d5d4c71e5a33c3384dde4f4784dff130251e4d7027aa78edc8272"
+    },
+    {
+      "path": "cloud_sglang_vs_vllm.ipynb",
+      "sha256": "f6de03664c02d44631a0aee6504ecbd0108b4ecb17f16fb5ed021a34241591fc"
+    },
+    {
+      "path": "cloud_vllm_prefix_control.ipynb",
+      "sha256": "a61e3e1f215da1b0848552dd5edff3e09711fa7ccec384cf83cace5d9186e7f0"
+    },
+    {
+      "path": "cloud_vllm_verify.ipynb",
+      "sha256": "856ce47b1bf8b97ac607911cb8c98f9cdef860067e1bfbf8dafa86d55897303f"
+    },
+    {
+      "path": "docs/_调研候选36条_2026-09-07.md",
+      "sha256": "97fc91ee087978389adddc533db77e0af33e19356b15068e5dda318dd0722495"
+    },
+    {
+      "path": "docs/下一步_优化方向调研_2026-09-07.md",
+      "sha256": "fa4bece1f4259312473a2528433b4468de2fd60eb080eada25834124c2c435c5"
+    },
+    {
+      "path": "gemm_cliff.py",
+      "sha256": "259429c90bff97e4ad7a9a9c4ef6617b0f8afc8b36eeaf5ca7eb3fb6a1dff478"
+    },
+    {
+      "path": "isolate.py",
+      "sha256": "fb2c293e61794bfb2683f6a59f53b44aaba4866d3e645b527118d29a3a96332f"
+    },
+    {
+      "path": "results_t4/corrections_2026-09-07.txt",
+      "sha256": "d781d9b18534cc3471033777540f6d294479c6522d6a812dbc98c97b9ea16621"
+    },
+    {
+      "path": "results_t4/dip_causal_2026-09-08.txt",
+      "sha256": "dd28ec9004b58734a45d62f4d6b43a210f633a3fd325f836d477aad0c65164ab"
+    },
+    {
+      "path": "results_t4/dip_rootcause_2026-09-05.txt",
+      "sha256": "10f820d94115ff6e8fcff58917f6af48babccfefe4d416bc843a4c03659486d0"
+    },
+    {
+      "path": "results_t4/prefix_control_vllm_vs_sglang_2026-09-05.txt",
+      "sha256": "b10a23f0c9cf9c4d615c82892b80e129ff21a28b723b5bd8faee47d967d8f848"
+    },
+    {
+      "path": "results_t4/quant_fp16_awq_gptq_2026-09-05.txt",
+      "sha256": "afff598e5f6bc899469b057f10445f353e68276decf61c3b25f985aa2c1ca760"
+    },
+    {
+      "path": "results_t4/roofline_decode_2026-09-05.txt",
+      "sha256": "3bddeb0b59fa6371088fc1b95bfd059f0d76eb8dc1537f3c2d2fcc2f3b2c3ac9"
+    },
+    {
+      "path": "results_t4/sglang_attempt_notes.md",
+      "sha256": "8ff56eed69d432a2408101caf38751d5c4d18471befeee9a798282b73a6a724c"
+    },
+    {
+      "path": "results_t4/sglang_outliers_repeat_2026-09-05.txt",
+      "sha256": "a4f885f369692c060a74c105e9a044d99e1e00cae4885f65252fea5c7303e70e"
+    },
+    {
+      "path": "results_t4/sglang_t4_2026-09-05.txt",
+      "sha256": "5d3dcb21a4f78267f78b9ee641c15573b9ae279c76ec179e2cf41bd8be6daeb2"
+    },
+    {
+      "path": "results_t4/t4_gemm_control.txt",
+      "sha256": "145712d58140661ffaddfe299df31e11fc7aad43bf169bbdacf3ece980b705cf"
+    },
+    {
+      "path": "results_t4/t4_serving_and_prefix.txt",
+      "sha256": "16d0349bb7da63f28c25120b171646bb61c1b7791496032a5be6c6da2b3444a3"
+    },
+    {
+      "path": "serve.sh",
+      "sha256": "128e39fc6b3b96eb75ae6b504c31a5637c62d60494999750cecb3dd1f4b2a21a"
+    },
+    {
+      "path": "serve_eager.sh",
+      "sha256": "f67ebd86c8663eef708e2fb216d5f02aa9218516a816711361bd8309c67c987a"
+    },
+    {
+      "path": "tools_check_notebooks.py",
+      "sha256": "e73a6bbd6b50a4e2971d50d5a477c17981a131c70c68180a5df1dc3570d6b160"
+    }
+  ]
+}

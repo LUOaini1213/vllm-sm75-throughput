@@ -1,5 +1,14 @@
 # vLLM 在 GTX 1650 (sm_75) 上的部署与吞吐分析
 
+> **2026-10-12 客户端完整性更新：** 当前 `bench_serving.py` / `quick_bench.py`
+> 共享严格 HTTP/SSE 校验，输出 schema v2。吞吐仅使用服务端最终
+> `usage.completion_tokens`；失败或缺失 usage 时不生成吞吐比，退出码为 2。
+> 下文表格与 notebook 是历史实验，保留原始数值和旧客户端来源，未用新客户端重测。
+> 离线协议反例不能证明旧实测受到影响。详见 [指标边界与验收](docs/serving-integrity.md)。
+
+无需模型/GPU的检查：`python -B -m unittest discover -s tests -v`，
+`python -B verify_historical.py`。当前客户端运行命令与旧输出的区别见上述说明。
+
 > ### ✅ 验证状态（2026-09-02 已确认）
 >
 > 第四节把吞吐塌陷归因于「`sm_75` 缺少 Tensor Core 时 cuBLAS 的 fp16 GEMM 小 M 路径病态」。
@@ -230,7 +239,11 @@ prefill 的差异完全淹没了。已在 Colab T4（fp16 正常）重做，除 
 
 前面的内容到 09-02 为止。这一节是 09-05 补的四轮，每轮的**判据都在跑之前写死**，
 结果不管好看不好看都照原样记。全部在同一张 Colab T4 上，压测脚本
-`bench_serving.py` 逐字节未改（`sha256` 前 16 位 `ef5bf10717ecdacf`），所以横向可比。
+当时的 `bench_serving.py` 逐字节未改（历史记录的 `sha256` 前 16 位
+`ef5bf10717ecdacf`），这是该轮横向比较的旧客户端口径。当前客户端已修订；
+[旧脚本冻结副本](historical/d933443/bench_serving.py.txt) 与
+[来源清单](historical/d933443/manifest.json) 保留 `d933443` 的原始字节，
+仅供历史审计，不能作为新客户端的性能证明。
 
 ## A. SGLang vs vLLM：前缀复用「开 vs 关」同口径对照
 

@@ -1,0 +1,4 @@
+# Evidence hashes are over recorded Git bytes. Do not convert checkout line endings.
+* -text
+# A terminating blank line is part of a complete SSE frame, including at EOF.
+tests/fixtures/*.sse whitespace=-blank-at-eof
