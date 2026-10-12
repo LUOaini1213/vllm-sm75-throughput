@@ -1,0 +1,14 @@
+: synthetic protocol fixture, not a model/server measurement
+
+data: {"choices":[{"index":0,"delta":{"role":"assistant","content":""},"finish_reason":null}]}
+
+data: {"choices":[{"index":0,"delta":{"content":"Hello world!"},"finish_reason":null}]}
+
+data: {"choices":[{"index":0,"delta":{"content":" More text."},"finish_reason":null}]}
+
+data: {"choices":[{"index":0,"delta":{},"finish_reason":"stop"}]}
+
+data: {"choices":[],"usage":{"prompt_tokens":8,"completion_tokens":7,"total_tokens":15}}
+
+data: [DONE]
+
