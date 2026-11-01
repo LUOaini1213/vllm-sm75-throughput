@@ -1,0 +1,134 @@
+{
+  "kind": "paired_fixed_task_comparison",
+  "dataset_sha256": "4cd47589ca6f76fea60bd9406d064e80e24d648713244acef9af254be9e98bc9",
+  "variants": [
+    {
+      "label": "fp16",
+      "model": "Qwen/Qwen2.5-0.5B-Instruct",
+      "successes": 16,
+      "exact_matches": 3,
+      "total": 16
+    },
+    {
+      "label": "fp32",
+      "model": "Qwen/Qwen2.5-0.5B-Instruct",
+      "successes": 16,
+      "exact_matches": 3,
+      "total": 16
+    }
+  ],
+  "paired": [
+    {
+      "id": "arith_1",
+      "matches": {
+        "fp16": false,
+        "fp32": false
+      }
+    },
+    {
+      "id": "arith_2",
+      "matches": {
+        "fp16": false,
+        "fp32": false
+      }
+    },
+    {
+      "id": "arith_3",
+      "matches": {
+        "fp16": false,
+        "fp32": false
+      }
+    },
+    {
+      "id": "arith_4",
+      "matches": {
+        "fp16": false,
+        "fp32": false
+      }
+    },
+    {
+      "id": "lookup_1",
+      "matches": {
+        "fp16": false,
+        "fp32": false
+      }
+    },
+    {
+      "id": "lookup_2",
+      "matches": {
+        "fp16": false,
+        "fp32": false
+      }
+    },
+    {
+      "id": "lookup_3",
+      "matches": {
+        "fp16": true,
+        "fp32": true
+      }
+    },
+    {
+      "id": "lookup_4",
+      "matches": {
+        "fp16": false,
+        "fp32": false
+      }
+    },
+    {
+      "id": "rule_1",
+      "matches": {
+        "fp16": false,
+        "fp32": false
+      }
+    },
+    {
+      "id": "rule_2",
+      "matches": {
+        "fp16": true,
+        "fp32": true
+      }
+    },
+    {
+      "id": "rule_3",
+      "matches": {
+        "fp16": false,
+        "fp32": false
+      }
+    },
+    {
+      "id": "rule_4",
+      "matches": {
+        "fp16": true,
+        "fp32": true
+      }
+    },
+    {
+      "id": "logic_1",
+      "matches": {
+        "fp16": false,
+        "fp32": false
+      }
+    },
+    {
+      "id": "logic_2",
+      "matches": {
+        "fp16": false,
+        "fp32": false
+      }
+    },
+    {
+      "id": "logic_3",
+      "matches": {
+        "fp16": false,
+        "fp32": false
+      }
+    },
+    {
+      "id": "logic_4",
+      "matches": {
+        "fp16": false,
+        "fp32": false
+      }
+    }
+  ]
+}

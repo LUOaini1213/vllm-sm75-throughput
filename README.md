@@ -1,4 +1,8 @@
-# vLLM 在 GTX 1650 (sm_75) 上的部署与吞吐分析
+# sm_75 推理吞吐分析：GTX 1650 上的 fp16 GEMM 塌陷，与 Tesla T4 上的解码 CUDA graph 捕获上限
+
+> **2026-09-18 流式计数更正：**旧 `bench_serving.py` 与 notebook 中 `probe.py` 将每个非空 `delta.content` 计为一个 token，未保存服务端 usage/token IDs。旧表中的 TPOT、tok/s 应读作内容片段计数下的近似间隔和吞吐，不能独立证明严格 token 性能；TTFT 是首个非空内容到达时间。batch32 35.74→10.26 ms 的 3.48 倍仅属于历史近似统计量，4.42 倍旧吞吐还含未解释墙钟停顿，不应作为纯优化收益。新的压测、token ID/usage 核对与本机测试单独保存在 [`catl_strengthening_20260918/`](catl_strengthening_20260918/)，不与历史 T4 测量合并。
+
+[![CI](https://github.com/LUOaini1213/vllm-sm75-throughput/actions/workflows/ci.yml/badge.svg)](https://github.com/LUOaini1213/vllm-sm75-throughput/actions/workflows/ci.yml)
 
 > **2026-10-12 客户端完整性更新：** 当前 `bench_serving.py` / `quick_bench.py`
 > 共享严格 HTTP/SSE 校验，输出 schema v2。吞吐仅使用服务端最终
@@ -29,11 +33,35 @@
 > 即「有 Tensor Core 时 fp16 更耐受大 M」，与 GTX 1650 上的表现完全相反。
 >
 > 复现：`cloud_vllm_verify.ipynb` / `gemm_cliff.py`，Colab T4 一键运行。
+> T4 侧三组形状的完整数据：[`results_t4/t4_gemm_control.txt`](results_t4/t4_gemm_control.txt)
 >
 > **已上报上游：**
 > - PyTorch（根因所在）：https://github.com/pytorch/pytorch/issues/195716
 > - vLLM（部署陷阱与告警建议）：https://github.com/vllm-project/vllm/issues/54950
 
+## 本仓两条主线
+
+**一、fp16 GEMM 小 M 塌陷（GTX 1650 → Tesla T4 受控对照）。** 一张移除了 Tensor Core 的
+sm_75 卡上，fp16 `[M,896]@[896,4864]` 从 M=1 的 99.5 GiB/s 塌到 M=2 的 4.3 GiB/s（0.04×）；
+同为 sm_75、只多一个 Tensor Core 的 T4 上跑同一份 `gemm_cliff.py`，同一比值是 0.83×。
+vLLM 的 batch 悬崖是这一底层现象的放大。已上报 PyTorch 与 vLLM 上游（链接见上）。
+→ 第一～五节
+
+**二、解码 CUDA graph 的捕获上限被框架按显存档位硬编码成 8（Tesla T4，SGLang 0.5.19）。**
+显式加一个 `--cuda-graph-max-bs-decode 32`，batch 32 的 TPOT 从 35.74 降到 10.26 ms —— **3.48×**。
+同一对照的吞吐口径是 608.0 → 2690.2 tok/s（4.42×），但该分母含一段约 7.8 s 的未解释墙钟停顿，
+扣掉后约 857 → 2690.2 tok/s（3.14×）；**对外以 TPOT 口径 3.48× 为准**，两个口径的差与依据见
+[`results_t4/corrections_2026-09-13.txt`](results_t4/corrections_2026-09-13.txt)。
+**按顶部 2026-09-18 更正，3.48×、4.42×、3.14× 都来自旧客户端的内容片段计数，只是历史近似统计量，不是纯优化收益。**
+→ 第 D 节的「（2026-09-08）干预实验做完了，根因坐实」
+
+两条线的关系：第一条是 GTX 1650 上「为什么 batch 一大就崩」，第二条是把同一个问句
+搬到有 Tensor Core 的 T4 上之后，剩下的那个台阶来自哪里。
+
+根目录的 `check_claims.py` 是一把纯 CPU 的尺子：它从结果文件与 notebook 的真实输出里
+把上面每一个数字重新算一遍，对不上就退出非 0。CI 每次 push 都跑它。
+
+---
 
 在一张 **GTX 1650（4 GiB，Turing sm_75，无 Tensor Core）** 上把 vLLM 0.28.0 跑起来，
 压测并发吞吐，过程中发现并定位了一个 **fp16 批量推理吞吐塌陷 23 倍** 的问题。
@@ -89,6 +117,15 @@ vLLM 直接回落 `TRITON_ATTN`。这是「同一份 vLLM，换张卡就是另�
 
 TPOT 在并发 2→32 之间恒定在 180~185 ms —— **每步耗时与实际 batch 无关**，
 这是「有个固定开销在主导」的典型特征。
+
+这一轮本身的 JSON 没有留下来：旧版 `bench_serving.py` 把结果固定写到同名的 `sweep_results.json`
+（冻结副本 [`historical/d933443/bench_serving.py.txt`](historical/d933443/bench_serving.py.txt) 第 82 行，
+文件名写死、不带时间戳），后跑的 `--enforce-eager` 对照轮把它覆盖了。
+2026-10-12 修订后的客户端改写 `sweep_results_v2.json`，不再覆盖这个旧文件名。
+留下来的是那个对照轮，已原样收进仓里：
+[`results_local/gtx1650_sweep_enforce_eager_2026-09-02.json`](results_local/gtx1650_sweep_enforce_eager_2026-09-02.json)
+—— 它并发 1 的 TPOT 19.13 ms 就是下一节表里 `--enforce-eager` 那一行的来源。
+来龙去脉与本地这半边还缺哪些产物，写在 [`results_local/README.md`](results_local/README.md)。
 
 ---
 
@@ -182,34 +219,45 @@ fp16 只在 batch=1 时有优势。
 
 ## 六、复现
 
+本节只覆盖本地 GTX 1650 那一轮（第一～五节）。云端 Tesla T4 的全部实验在文末的
+notebook 表里，Colab 一键跑，不需要本地环境。
+
+环境准备没有脚本：在 WSL2 Ubuntu 24.04 里建一个 venv 装 vLLM 0.28.0，
+再加上第一节那张表「处理」列的四条（`--gpu-memory-utilization 0.75`、
+`VLLM_WSL2_ENABLE_PIN_MEMORY=1`、`apt install build-essential`、`apt install python3.12-dev`）。
+
 ```bash
-# 一次性环境准备（WSL2 Ubuntu）
-bash setup.sh
-
-# 起服务（fp16 默认配置）
+# 起服务（fp16，四个坑的处理都写在脚本注释里）
 bash serve.sh
+# 对照组：--enforce-eager，其余参数与 serve.sh 完全一致
+bash serve_eager.sh
 
-# 并发扫描 + 前缀复用对照
-bash run_bench.sh
+# 并发扫描。当前是 2026-10-12 修订后的 schema v2 客户端，产出 sweep_results_v2.json，
+# 吞吐取服务端 usage，与第二节旧客户端的口径不同（见 docs/serving-integrity.md）
+python bench_serving.py
+# 前缀复用对照
+python bench_serving.py --prefix-test
 
-# 稳态突发测试（无新请求到达）
+# 稳态突发测试（一次性发 N 条，期间无新请求到达）
 python isolate.py
 
-# 裸 GEMM 微基准 —— 根因所在
+# 裸 GEMM 微基准 —— 根因所在，不需要起服务
 python gemm_cliff.py
-
-# dtype 对照
-bash _exp_dtype.sh float32 1024 fp32
 ```
 
 | 文件 | 说明 |
 |---|---|
-| `setup.sh` | WSL 环境准备：uv + vLLM + 模型 |
 | `serve.sh` / `serve_eager.sh` | 服务启动（含四个坑的处理）/ 关 CUDA Graph 对照组 |
-| `bench_serving.py` | 并发扫描，测 TTFT / TPOT / 吞吐 |
+| `bench_serving.py` | 并发扫描，测 TTFT / TPOT / 吞吐，兼前缀复用对照 |
+| `quick_bench.py` | 单档定点测 TPOT，用于快速对比两个服务端配置 |
 | `isolate.py` | 稳态突发测试，隔离 prefill 插队的影响 |
 | `gemm_cliff.py` | 裸 GEMM 微基准，定位根因 |
-| `_exp.sh` / `_exp_dtype.sh` | 参数化对照实验 |
+| `check_claims.py` | 纯 CPU 校验：把本 README 里的数字从结果文件与 notebook 输出回算一遍 |
+| `tools_check_notebooks.py` | notebook 静态检查，六条规则（见文末） |
+
+`--dtype float32` 那一轮（第五节）没有单独的脚本：在 `serve.sh` 的命令行上把
+`--dtype half` 换成 `--dtype float32`、`--max-model-len 2048` 换成 `1024`（第五节末尾那条
+「KV cache 从 148,576 缩到 5,824 tokens」就是这么来的），再跑同一个 `python isolate.py`。
 
 ---
 
@@ -413,9 +461,22 @@ T4 是 15360 MiB，落在第一档，源码注释直接写着 `# T4, 4080`。该
 **一个可直接用的优化**：T4 上只要并发可能超过 8，就该显式设 `--cuda-graph-max-bs-decode`。
 框架档位表按「T4 是小卡」给了 8，实测显存完全够捕到 32。
 
-| 吞吐提升（C ÷ A） | batch 12 | batch 16 | batch 24 | batch 32 |
+| batch | 12 | 16 | 24 | 32 |
 |---|---|---|---|---|
-| | 4.05× | 4.12× | 3.18× | **4.42×** |
+| 吞吐比 C ÷ A | 4.05× | 4.12× | 3.18× | 4.42× |
+| TPOT 比 A ÷ C | **4.56×** | **4.52×** | **3.38×** | **3.48×** |
+
+**batch 32 以 TPOT 口径 3.48× 为准，吞吐口径 4.42× 的分母不干净。**
+压测每请求输出 128 token、每档跑满 4 轮（`n_req = max(4×并发, 16)`），
+所以墙钟应约等于 `4 × (TTFT + 127 × TPOT)`。A_default@batch32 的自洽值是 19.12 s，
+实测 26.92 s（+40.8%）—— 多出的 7.8 s 不在解码里（TPOT 35.74 ms 与同组 12/16/24 档同量级）。
+按自洽值折算，A 的吞吐是 856.8 而不是 608.0 tok/s，C ÷ A ≈ **3.14×**；
+这与同轮 B_nograph@32 实测的 856.6 tok/s 吻合。
+另外三个直接看表就能看出的矛盾（不用任何反推）：A 组吞吐 batch 24 的 670.0 > batch 32 的 608.0；
+B32 ÷ A32 的吞吐比 1.41× 与同表 TPOT 比 1.02× 打架；默认后端 D32 的 945.6 tok/s 同样远高于 608.0。
+逐格偏差表与全部依据：[`results_t4/corrections_2026-09-13.txt`](results_t4/corrections_2026-09-13.txt)。
+**按顶部 2026-09-18 更正，这张表的吞吐与 TPOT 都由旧客户端按非空内容片段计数得出，
+表里所有比值（含 3.48× 与 4.42×）只是历史近似统计量，不能当作纯优化收益引用。**
 
 **仍未做**：vLLM 侧反向复现（把捕获桶砍到 `[1,2,4,8]`）。在跑出来之前只能说
 「这是 SGLang 上的因果实证」，**不能说「这是图捕获分桶的通用机制」**。
@@ -427,16 +488,20 @@ T4 是 15360 MiB，落在第一档，源码注释直接写着 `# T4, 4080`。该
 
 → [`results_t4/dip_rootcause_2026-09-05.txt`](results_t4/dip_rootcause_2026-09-05.txt)
 → 因果实证原始数据：[`results_t4/dip_causal_2026-09-08.txt`](results_t4/dip_causal_2026-09-08.txt)
-→ 两条更正的完整依据：[`results_t4/corrections_2026-09-07.txt`](results_t4/corrections_2026-09-07.txt)
+→ 09-07 两条更正的完整依据：[`results_t4/corrections_2026-09-07.txt`](results_t4/corrections_2026-09-07.txt)
+→ 09-13 对 batch 32 吞吐分母的更正：[`results_t4/corrections_2026-09-13.txt`](results_t4/corrections_2026-09-13.txt)
 （旧结果文件一律不改、留档，更正另立新文件）
 
 ## 复现
 
-八份 notebook 可直接在 Colab（T4）打开跑（最后一份 `cloud_cross_vllm_graph` 已自检，**尚未跑出结果**），每份第 1 节都列了该框架的环境阻塞与修法：
+仓内共 11 份 notebook，可直接在 Colab（T4）打开跑，每份第 1 节都列了该框架的环境阻塞与修法。
+下表逐份说明，**并注明哪几份没有跑出数据**：
 
 | notebook | 做什么 |
 |---|---|
+| `cloud_vllm_verify.ipynb` | fp16 GEMM 塌陷的 T4 对照验证（第一屏那张表的来源） |
 | `cloud_sglang_v2.ipynb` | SGLang vs vLLM 受控对照（含 SGLang 在 Colab 的四个依赖阻塞修法） |
+| `cloud_sglang_vs_vllm.ipynb` | 上一份的 v1，**未跑出数据**：卡在 CUDA Toolkit 版本，五个环境坑的记录见 [`results_t4/sglang_attempt_notes.md`](results_t4/sglang_attempt_notes.md) |
 | `cloud_vllm_prefix_control.ipynb` | vLLM 前缀复用开/关，补齐口径 |
 | `cloud_quant_matrix.ipynb` | fp16 / AWQ / GPTQ-Int4 |
 | `cloud_roofline_decode.ipynb` | 带宽屋顶检验 |
@@ -444,7 +509,7 @@ T4 是 15360 MiB，落在第一档，源码注释直接写着 `# T4, 4080`。该
 | `cloud_dip_rootcause.ipynb` | 凹陷根因四实验 |
 | `cloud_dip_confirm.ipynb` | CUDA graph 根因的**因果实证**（默认 / 关解码图 / 上限抬到 32）+ 补跑默认后端 |
 | `cloud_dip_confirm_executed.ipynb` | 同上，**带 2026-09-08 那次的真实输出**（四组启动日志、捕获的 bs 列表、逐档 TPOT） |
-| `cloud_cross_vllm_graph.ipynb` | 在 vLLM 上反向复现同一机制 + 核对 Marlin 前提，**待跑** |
+| `cloud_cross_vllm_graph.ipynb` | 在 vLLM 上反向复现同一机制 + 核对 Marlin 前提，已自检，**尚未跑出结果** |
 
 ## 下一步
 
@@ -459,5 +524,28 @@ SGLang 投机解码的 sm_75 内核缺失等），以及哪些结论我打开源
 
 ---
 
-`tools_check_notebooks.py` 是配套的 notebook 静态检查，六条规则各对应一次真实踩坑
+## 两把在 CI 里跑的尺子
+
+都是纯 CPU、纯标准库，不需要 GPU —— 这仓的数据全是 T4 云端产物，GPU 那部分本来就进不了 CI，
+能进的是「日志解析 + 数字回算」。
+
+**`check_claims.py`** 把 README 里的数字重新算一遍：从 `cloud_dip_confirm_executed.ipynb`
+的真实 cell 输出和 `results_t4/*.txt` 里各解析一次四组数据，先断言两个来源逐格一致
+（防转写抄错），再断言每格 `墙钟 × 吞吐 ÷ 请求数 = 128 token/请求`，
+再用 `4 × (TTFT + 127 × TPOT)` 反推墙钟并给出逐格偏差 —— A_default@4、A_default@32、
+D_default_backend@4 三格超阈值，它们在脚本里是**具名白名单**，每一条都要写明理由，
+而且白名单里的格子如果哪天不再离群，脚本同样会红（防止白名单变成挡箭牌）。
+最后把 README 与结果文件里的每个比值、以及第一屏那张 GEMM 对照表逐个回算。
+把 README 里的 `4.42×` 改成 `4.50×`，`python check_claims.py` 立刻退出 1。
+
+**`tools_check_notebooks.py`** 是 notebook 静态检查，六条规则各对应一次真实踩坑
 （嵌套引号吞掉字符串、非法 `%` 格式符、正则缺捕获组配 `group(1)`、循环里的宽 `except` 等）。
+不带参数时默认量仓内**全部** `*.ipynb`。它抓出过的一个真实 bug：
+`cloud_sglang_vs_vllm.ipynb` 的 `print("\n".join(errs[-12:]))` 里，
+那个 `\n` 被展开成了真换行，字符串断成两行 —— 正是它第 1 条规则针对的那种坑。
+这个 bug 从 2026-09-02 提交（commit 3ac55fb）躺到 09-13 才被发现，因为脚本的默认文件表当时硬编码成两个文件名，
+11 份 notebook 只量了 2 份。
+
+2026-10-12 合进来的另一条工作流 [`.github/workflows/offline-integrity.yml`](.github/workflows/offline-integrity.yml)
+还跑两样：`tests/` 下的离线协议单测，以及 `verify_historical.py` 对历史文件与旧客户端冻结副本的字节校验，
+详见 [`docs/serving-integrity.md`](docs/serving-integrity.md)。

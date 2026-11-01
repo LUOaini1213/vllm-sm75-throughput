@@ -6,7 +6,7 @@ import subprocess
 import sys
 
 MANIFEST = "historical/d933443/manifest.json"
-MANIFEST_SHA256 = "be533ac9e83ed6c1a89c913b7679cff7d266315df2bdacc3f79b628ea51a27ab"
+MANIFEST_SHA256 = "f7296555f436d5601e1666709f500e4f7df5e594d8ff7c6cb15423db247eb2c9"
 
 
 def verify_history(root, *, git_source=False):

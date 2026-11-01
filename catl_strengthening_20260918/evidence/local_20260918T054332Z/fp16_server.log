@@ -1,0 +1,16 @@
+Loading weights:   0%|          | 0/290 [00:00<?, ?it/s]Loading weights:   0%|          | 1/290 [00:00<00:42,  6.80it/s]Loading weights:  26%|██▌       | 76/290 [00:00<00:00, 369.93it/s]Loading weights:  41%|████▏     | 120/290 [00:00<00:00, 371.04it/s]Loading weights:  56%|█████▌    | 161/290 [00:00<00:00, 384.70it/s]Loading weights:  70%|██████▉   | 202/290 [00:00<00:00, 376.44it/s]Loading weights:  86%|████████▌ | 248/290 [00:00<00:00, 402.35it/s]Loading weights: 100%|██████████| 290/290 [00:00<00:00, 399.36it/s]Loading weights: 100%|██████████| 290/290 [00:00<00:00, 367.81it/s]
+REFERENCE_READY Qwen/Qwen2.5-0.5B-Instruct dtype=half device=cuda serialized=True
+Error handling request from 127.0.0.1
+Traceback (most recent call last):
+  File "/root/vllmbench/.venv/lib/python3.12/site-packages/aiohttp/web_protocol.py", line 575, in _handle_request
+    resp = await request_handler(request)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/root/vllmbench/.venv/lib/python3.12/site-packages/aiohttp/web_app.py", line 559, in _handle
+    return await handler(request)
+           ^^^^^^^^^^^^^^^^^^^^^^
+  File "/mnt/c/Users/LW/Desktop/求职/04_作品与代码/vllm-sm75-throughput/catl_strengthening_20260918/reference_service.py", line 53, in completions
+    current = torch.tensor([ids], device=device)
+              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+RuntimeError: Could not infer dtype of tokenizers.Encoding
+======== Running on http://127.0.0.1:8018 ========
+(Press CTRL+C to quit)

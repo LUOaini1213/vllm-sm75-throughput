@@ -1,0 +1,4 @@
+Loading weights:   0%|          | 0/290 [00:00<?, ?it/s]Loading weights:   0%|          | 1/290 [00:00<01:23,  3.46it/s]Loading weights:  51%|█████▏    | 149/290 [00:00<00:00, 488.25it/s]Loading weights:  81%|████████  | 235/290 [00:00<00:00, 586.49it/s]Loading weights: 100%|██████████| 290/290 [00:00<00:00, 516.88it/s]
+REFERENCE_READY Qwen/Qwen2.5-0.5B-Instruct dtype=float device=cuda serialized=True
+======== Running on http://127.0.0.1:8018 ========
+(Press CTRL+C to quit)

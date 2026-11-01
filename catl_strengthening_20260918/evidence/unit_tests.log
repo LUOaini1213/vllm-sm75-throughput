@@ -1,0 +1,12 @@
+test_batched_token_latency_not_fabricated (test_benchmark.BenchmarkTests.test_batched_token_latency_not_fabricated) ... ok
+test_failure_excluded_from_goodput (test_benchmark.BenchmarkTests.test_failure_excluded_from_goodput) ... ok
+test_missing_usage_is_not_success (test_benchmark.BenchmarkTests.test_missing_usage_is_not_success) ... ok
+test_percentile_edge_cases (test_benchmark.BenchmarkTests.test_percentile_edge_cases) ... ok
+test_sse_utf8_fragmentation_and_multiline (test_benchmark.BenchmarkTests.test_sse_utf8_fragmentation_and_multiline) ... ok
+test_token_ids_not_content_chunks_and_queue (test_benchmark.BenchmarkTests.test_token_ids_not_content_chunks_and_queue) ... ok
+test_truncated_stream_is_not_success (test_benchmark.BenchmarkTests.test_truncated_stream_is_not_success) ... ok
+
+----------------------------------------------------------------------
+Ran 7 tests in 0.014s
+
+OK

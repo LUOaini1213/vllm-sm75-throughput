@@ -13,10 +13,14 @@
 规则 3 逐个消费 %-转换符，%% 视为一对，否则合法的 "%.0f%%" 会误报。
 """
 import ast
+import glob
 import io
 import json
+import os
 import re
 import sys
+
+HERE = os.path.dirname(os.path.abspath(__file__))
 
 # 合法的 %-转换符（含宽度/精度/标志），%% 也算一个整体
 CONV = re.compile(r"%[-+ #0]*[\d*]*(?:\.[\d*]+)?[hlL]?[diouxXeEfFgGcrsa%]")
@@ -119,17 +123,24 @@ def check(path):
 
 
 if __name__ == "__main__":
-    files = sys.argv[1:] or ["cloud_sglang_v2.ipynb", "cloud_quant_matrix.ipynb"]
+    # 不带参数时量仓内全部 notebook。原先这里硬编码了两个文件名，
+    # 于是 11 份里只有 2 份被量过 —— 漏掉的那份正好是坏的（见 README 文末）。
+    files = sys.argv[1:] or sorted(glob.glob(os.path.join(HERE, "*.ipynb")))
+    if not files:
+        print("没有找到任何 .ipynb")
+        sys.exit(1)
     bad_total = 0
     for f in files:
         ps = check(f)
         nb = json.load(io.open(f, encoding="utf-8"))
         n_code = sum(1 for c in nb["cells"] if c["cell_type"] == "code")
+        name = os.path.basename(f)
         if ps:
             bad_total += len(ps)
-            print("%s  (%d 个代码 cell)  发现 %d 处：" % (f, n_code, len(ps)))
+            print("%s  (%d 个代码 cell)  发现 %d 处：" % (name, n_code, len(ps)))
             for i, kind, detail in ps:
                 print("   cell %-3d %-16s %s" % (i, kind, detail))
         else:
-            print("%s  (%d 个代码 cell)  通过" % (f, n_code))
+            print("%s  (%d 个代码 cell)  通过" % (name, n_code))
+    print("共 %d 份 notebook，%s" % (len(files), "全部通过" if not bad_total else "发现 %d 处问题" % bad_total))
     sys.exit(1 if bad_total else 0)

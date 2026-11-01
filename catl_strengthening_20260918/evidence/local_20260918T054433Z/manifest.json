@@ -1,0 +1,120 @@
+{
+  "started_utc": "20260918T054433Z",
+  "platform": "Linux-6.18.33.2-microsoft-standard-WSL2-x86_64-with-glibc2.39",
+  "python": "3.12.3 (main, Jul 15 2026, 23:46:41) [GCC 13.3.0]",
+  "torch": "2.13.0+cu130",
+  "vllm": "0.28.0",
+  "transformers": "5.16.1",
+  "gpu": "NVIDIA GeForce GTX 1650",
+  "capability": [
+    7,
+    5
+  ],
+  "nvidia_smi_before": {
+    "returncode": 0,
+    "stdout": "Fri Sep 18 13:44:34 2026       \n+-----------------------------------------------------------------------------------------+\n| NVIDIA-SMI 590.74                 Driver Version: 592.82         CUDA Version: 13.1     |\n+-----------------------------------------+------------------------+----------------------+\n| GPU  Name                 Persistence-M | Bus-Id          Disp.A | Volatile Uncorr. ECC |\n| Fan  Temp   Perf          Pwr:Usage/Cap |           Memory-Usage | GPU-Util  Compute M. |\n|                                         |                        |               MIG M. |\n|=========================================+========================+======================|\n|   0  NVIDIA GeForce GTX 1650        On  |   00000000:01:00.0 Off |                  N/A |\n| N/A   52C    P0             16W /   50W |       0MiB /   4096MiB |      0%      Default |\n|                                         |                        |                  N/A |\n+-----------------------------------------+------------------------+----------------------+\n\n+-----------------------------------------------------------------------------------------+\n| Processes:                                                                              |\n|  GPU   GI   CI              PID   Type   Process name                        GPU Memory |\n|        ID   ID                                                               Usage      |\n|=========================================================================================|\n|  No running processes found                                                             |\n+-----------------------------------------------------------------------------------------+\n",
+    "stderr": ""
+  },
+  "model": "Qwen/Qwen2.5-0.5B-Instruct",
+  "offline": true,
+  "backend": "transformers-reference",
+  "vllm_use_v2_model_runner": false,
+  "experiments": [
+    {
+      "label": "fp16",
+      "command": [
+        "/root/vllmbench/.venv/bin/python",
+        "/mnt/c/Users/LW/Desktop/\u6c42\u804c/04_\u4f5c\u54c1\u4e0e\u4ee3\u7801/vllm-sm75-throughput/catl_strengthening_20260918/reference_service.py",
+        "--dtype",
+        "half",
+        "--device",
+        "cuda",
+        "--port",
+        "8018"
+      ],
+      "models_response": {
+        "object": "list",
+        "data": [
+          {
+            "id": "Qwen/Qwen2.5-0.5B-Instruct",
+            "object": "model",
+            "owned_by": "local_transformers_reference",
+            "max_model_len": 512
+          }
+        ]
+      },
+      "ready_s": 8.029929834,
+      "sweep_successes": 48,
+      "reliability": {
+        "passed": 5,
+        "total": 5
+      },
+      "quality": {
+        "exact_matches": 3,
+        "total": 16
+      },
+      "nvidia_smi_after": {
+        "returncode": 0,
+        "stdout": "Fri Sep 18 13:46:02 2026       \n+-----------------------------------------------------------------------------------------+\n| NVIDIA-SMI 590.74                 Driver Version: 592.82         CUDA Version: 13.1     |\n+-----------------------------------------+------------------------+----------------------+\n| GPU  Name                 Persistence-M | Bus-Id          Disp.A | Volatile Uncorr. ECC |\n| Fan  Temp   Perf          Pwr:Usage/Cap |           Memory-Usage | GPU-Util  Compute M. |\n|                                         |                        |               MIG M. |\n|=========================================+========================+======================|\n|   0  NVIDIA GeForce GTX 1650        On  |   00000000:01:00.0 Off |                  N/A |\n| N/A   65C    P0             30W /   50W |    1135MiB /   4096MiB |     43%      Default |\n|                                         |                        |                  N/A |\n+-----------------------------------------+------------------------+----------------------+\n\n+-----------------------------------------------------------------------------------------+\n| Processes:                                                                              |\n|  GPU   GI   CI              PID   Type   Process name                        GPU Memory |\n|        ID   ID                                                               Usage      |\n|=========================================================================================|\n|  No running processes found                                                             |\n+-----------------------------------------------------------------------------------------+\n",
+        "stderr": ""
+      },
+      "shutdown_returncode": 0
+    },
+    {
+      "label": "fp32",
+      "command": [
+        "/root/vllmbench/.venv/bin/python",
+        "/mnt/c/Users/LW/Desktop/\u6c42\u804c/04_\u4f5c\u54c1\u4e0e\u4ee3\u7801/vllm-sm75-throughput/catl_strengthening_20260918/reference_service.py",
+        "--dtype",
+        "float",
+        "--device",
+        "cuda",
+        "--port",
+        "8018"
+      ],
+      "models_response": {
+        "object": "list",
+        "data": [
+          {
+            "id": "Qwen/Qwen2.5-0.5B-Instruct",
+            "object": "model",
+            "owned_by": "local_transformers_reference",
+            "max_model_len": 512
+          }
+        ]
+      },
+      "ready_s": 7.005076145000004,
+      "sweep_successes": 48,
+      "reliability": {
+        "passed": 5,
+        "total": 5
+      },
+      "quality": {
+        "exact_matches": 3,
+        "total": 16
+      },
+      "nvidia_smi_after": {
+        "returncode": 0,
+        "stdout": "Fri Sep 18 13:47:17 2026       \n+-----------------------------------------------------------------------------------------+\n| NVIDIA-SMI 590.74                 Driver Version: 592.82         CUDA Version: 13.1     |\n+-----------------------------------------+------------------------+----------------------+\n| GPU  Name                 Persistence-M | Bus-Id          Disp.A | Volatile Uncorr. ECC |\n| Fan  Temp   Perf          Pwr:Usage/Cap |           Memory-Usage | GPU-Util  Compute M. |\n|                                         |                        |               MIG M. |\n|=========================================+========================+======================|\n|   0  NVIDIA GeForce GTX 1650        On  |   00000000:01:00.0 Off |                  N/A |\n| N/A   69C    P0             29W /   50W |    2241MiB /   4096MiB |     35%      Default |\n|                                         |                        |                  N/A |\n+-----------------------------------------+------------------------+----------------------+\n\n+-----------------------------------------------------------------------------------------+\n| Processes:                                                                              |\n|  GPU   GI   CI              PID   Type   Process name                        GPU Memory |\n|        ID   ID                                                               Usage      |\n|=========================================================================================|\n|  No running processes found                                                             |\n+-----------------------------------------------------------------------------------------+\n",
+        "stderr": ""
+      },
+      "shutdown_returncode": 0
+    }
+  ],
+  "source_sha256": {
+    "audit_history.py": "0b81ff9b033cffc20ea4e8b728bcc7a611ad30e07d149b92d723a347d164b060",
+    "benchmark.py": "08969392e3d38558e06035fcebbfd3da67998ae1c24acf6525820b7552646d3c",
+    "quality_eval.py": "e6e91d3bdcc795673ef6384e4d9e20cee58446b880c053fea915509b9b93d1b4",
+    "reference_service.py": "8ab9ce5d15aeee9d2246e323e5727e93384eba5c673d984039806bf8c7706e69",
+    "run_local.py": "61c541dda52225d59828c944239ea32d177277db0d0eec9be8b7f128ae824270",
+    "test_benchmark.py": "b4ea97e34721d1e80ac3e71449930df6021fa5b4fc25de0d4fd3ae9486c9f0fa"
+  },
+  "quality_dataset_sha256": "4cd47589ca6f76fea60bd9406d064e80e24d648713244acef9af254be9e98bc9",
+  "completed": true,
+  "finished_utc": "2026-09-18T05:47:21.106862+00:00",
+  "nvidia_smi_final": {
+    "returncode": 0,
+    "stdout": "Fri Sep 18 13:47:21 2026       \n+-----------------------------------------------------------------------------------------+\n| NVIDIA-SMI 590.74                 Driver Version: 592.82         CUDA Version: 13.1     |\n+-----------------------------------------+------------------------+----------------------+\n| GPU  Name                 Persistence-M | Bus-Id          Disp.A | Volatile Uncorr. ECC |\n| Fan  Temp   Perf          Pwr:Usage/Cap |           Memory-Usage | GPU-Util  Compute M. |\n|                                         |                        |               MIG M. |\n|=========================================+========================+======================|\n|   0  NVIDIA GeForce GTX 1650        On  |   00000000:01:00.0 Off |                  N/A |\n| N/A   65C    P8              6W /   50W |       0MiB /   4096MiB |      0%      Default |\n|                                         |                        |                  N/A |\n+-----------------------------------------+------------------------+----------------------+\n\n+-----------------------------------------------------------------------------------------+\n| Processes:                                                                              |\n|  GPU   GI   CI              PID   Type   Process name                        GPU Memory |\n|        ID   ID                                                               Usage      |\n|=========================================================================================|\n|  No running processes found                                                             |\n+-----------------------------------------------------------------------------------------+\n",
+    "stderr": ""
+  }
+}

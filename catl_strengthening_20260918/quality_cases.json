@@ -1,0 +1,18 @@
+[
+  {"id":"arith_1","category":"arithmetic","prompt":"Return only the integer result of 17 + 26.","answer":"43"},
+  {"id":"arith_2","category":"arithmetic","prompt":"A shipment has 12 boxes with 8 cells in each box. Return only the total number of cells.","answer":"96"},
+  {"id":"arith_3","category":"arithmetic","prompt":"Return only the integer result of 120 - 35.","answer":"85"},
+  {"id":"arith_4","category":"arithmetic","prompt":"Return only the integer result of 144 / 12.","answer":"12"},
+  {"id":"lookup_1","category":"context_lookup","prompt":"Data: shipment A=25, B=40, C=19. Which shipment has the most boxes? Reply with only its letter.","answer":"B"},
+  {"id":"lookup_2","category":"context_lookup","prompt":"Data: cell A temperature=28, B=32, C=25 degrees Celsius. Which cell is coolest? Reply with only its letter.","answer":"C"},
+  {"id":"lookup_3","category":"context_lookup","prompt":"Record: order_id=Q17, supplier=Delta, status=shipped. Return only the supplier value.","answer":"Delta"},
+  {"id":"lookup_4","category":"context_lookup","prompt":"Record: sensor=R8, voltage=3.6, unit=V. Return only the sensor identifier.","answer":"R8"},
+  {"id":"rule_1","category":"threshold_rule","prompt":"Rule: if temperature > 40 return ALERT, otherwise return OK. Temperature is 42. Return only ALERT or OK.","answer":"ALERT"},
+  {"id":"rule_2","category":"threshold_rule","prompt":"Rule: if temperature > 40 return ALERT, otherwise return OK. Temperature is 40. Return only ALERT or OK.","answer":"OK"},
+  {"id":"rule_3","category":"threshold_rule","prompt":"Rule: a part passes if length is at least 10 and at most 12. Length is 11. Return only PASS or FAIL.","answer":"PASS"},
+  {"id":"rule_4","category":"threshold_rule","prompt":"Rule: a part passes if length is at least 10 and at most 12. Length is 13. Return only PASS or FAIL.","answer":"FAIL"},
+  {"id":"logic_1","category":"sorting","prompt":"Return only the smallest number in this list: 7, 3, 9, 5.","answer":"3"},
+  {"id":"logic_2","category":"sorting","prompt":"Return only the largest number in this list: 18, 42, 27, 31.","answer":"42"},
+  {"id":"logic_3","category":"counting","prompt":"How many numbers in this list are greater than 5: 2, 8, 4, 9? Return only the count.","answer":"2"},
+  {"id":"logic_4","category":"counting","prompt":"There are 3 red, 4 blue, and 2 green containers. Return only the number of blue containers.","answer":"4"}
+]

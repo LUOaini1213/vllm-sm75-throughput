@@ -53,7 +53,9 @@
     },
     {
       "path": "cloud_sglang_vs_vllm.ipynb",
-      "sha256": "f6de03664c02d44631a0aee6504ecbd0108b4ecb17f16fb5ed021a34241591fc"
+      "sha256": "0b3e6c0562d9dec6f4f30058ade905b9961c0cd01e20636d24090dacdb943017",
+      "d933443_sha256": "f6de03664c02d44631a0aee6504ecbd0108b4ecb17f16fb5ed021a34241591fc",
+      "amended_by": "6ad07d3 (2026-09-13): fixed the one unterminated string in cell 4 of this never-executed notebook; merged after this manifest was generated"
     },
     {
       "path": "cloud_vllm_prefix_control.ipynb",
@@ -85,7 +87,9 @@
     },
     {
       "path": "results_t4/dip_causal_2026-09-08.txt",
-      "sha256": "dd28ec9004b58734a45d62f4d6b43a210f633a3fd325f836d477aad0c65164ab"
+      "sha256": "2c7670009051ee79405d8102dbd2b9c7c0b7b21b862b8a7941aacd95908e9853",
+      "d933443_sha256": "dd28ec9004b58734a45d62f4d6b43a210f633a3fd325f836d477aad0c65164ab",
+      "amended_by": "5e79fa1 (2026-09-13) and the 2026-11-01 merge PR: one pointer line each to the 2026-09-13 and 2026-09-18 corrections; the measured data is unchanged"
     },
     {
       "path": "results_t4/dip_rootcause_2026-09-05.txt",
@@ -133,7 +137,9 @@
     },
     {
       "path": "tools_check_notebooks.py",
-      "sha256": "e73a6bbd6b50a4e2971d50d5a477c17981a131c70c68180a5df1dc3570d6b160"
+      "sha256": "b46fbbdae4908a888d520deb9f4bfe8903fe44ffa10f7bc9a3d248eab4213084",
+      "d933443_sha256": "e73a6bbd6b50a4e2971d50d5a477c17981a131c70c68180a5df1dc3570d6b160",
+      "amended_by": "6ad07d3 (2026-09-13): scans every *.ipynb by default instead of two hard-coded names; merged after this manifest was generated"
     }
   ]
 }
