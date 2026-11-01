@@ -83,11 +83,20 @@ closed, including under optimized Python. No old metric is recomputed.
 Windows; an existing checkout with converted line endings must restore the
 verified original files before a byte audit can pass.
 
+Three of the 30 entries were re-recorded on 2026-11-01, when the unpushed
+2026-09-13 hardening commits were merged after this manifest:
+`cloud_sglang_vs_vllm.ipynb`, `tools_check_notebooks.py` and
+`results_t4/dip_causal_2026-09-08.txt`. Each keeps its d933443 hash under
+`d933443_sha256` and says what changed under `amended_by`; the dip_causal change
+is two inserted correction pointers (2026-09-13 and 2026-09-18), not new data. The other 27 entries and
+both snapshots are unchanged.
+
 The `.py.txt` snapshots are audit artifacts only, are not imported or executed,
 and cannot validate the revised runtime or support new performance claims.
 They freeze the last repository source, not a newly authenticated receipt for
 every old session. The frozen benchmark SHA256 begins `ef5bf10717ecdacf`, matching
 the README's recorded short hash; that identity does not authenticate every old
 response or establish absence/presence of protocol failures. Actual offline
-test counts and current source hashes are recorded in
-[serving-integrity-checks.json](serving-integrity-checks.json).
+test counts and source hashes as of commit a1ecc13 are recorded in
+[serving-integrity-checks.json](serving-integrity-checks.json); its hashes for
+`.gitattributes`, the manifest and `verify_historical.py` predate the 2026-11-01 merge.
