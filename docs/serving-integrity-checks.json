@@ -1,0 +1,83 @@
+{
+  "schema_version": 1,
+  "kind": "offline_protocol_guard_validation",
+  "date": "2026-10-12",
+  "python": "3.13.14",
+  "platform": "win32",
+  "source_commit_before_changes": "d93344334567f7292099e6b7f1d661fee5f5f7b5",
+  "source_identity_policy": "File SHA256s below bind the revised client/tests. The enclosing commit supplies their Git identity; frozen legacy clients retain the separate recorded source commit.",
+  "checks": [
+    {
+      "command": "python -B -m unittest discover -s tests -v",
+      "exit_code": 0,
+      "tests": 39,
+      "failed": 0,
+      "skipped": 0
+    },
+    {
+      "command": "python -O -B -m unittest discover -s tests -v",
+      "exit_code": 0,
+      "tests": 39,
+      "failed": 0,
+      "skipped": 0
+    },
+    {
+      "command": "python -B verify_historical.py",
+      "exit_code": 0,
+      "historical_guard": {
+        "source_commit": "d93344334567f7292099e6b7f1d661fee5f5f7b5",
+        "frozen_scripts": 2,
+        "unchanged_historical_files": 30,
+        "manifest_sha256": "be533ac9e83ed6c1a89c913b7679cff7d266315df2bdacc3f79b628ea51a27ab",
+        "git_source_checked": true,
+        "status": "PASS"
+      }
+    },
+    {
+      "command": "python -O -B verify_historical.py",
+      "exit_code": 0,
+      "historical_guard": {
+        "source_commit": "d93344334567f7292099e6b7f1d661fee5f5f7b5",
+        "frozen_scripts": 2,
+        "unchanged_historical_files": 30,
+        "manifest_sha256": "be533ac9e83ed6c1a89c913b7679cff7d266315df2bdacc3f79b628ea51a27ab",
+        "git_source_checked": true,
+        "status": "PASS"
+      }
+    }
+  ],
+  "ast_parse_files": [
+    "bench_serving.py",
+    "quick_bench.py",
+    "serving_metrics.py",
+    "verify_historical.py",
+    "tests/test_serving_metrics.py",
+    "tests/test_historical.py"
+  ],
+  "sha256": {
+    "bench_serving.py": "724b42a768d7b26c449d56d84fb8f691c275c42751356eddfb5d7957880df0f6",
+    "quick_bench.py": "f64f2267cbc23736a8472a8f8b8934b0cb1cdcbc41dea1f88af6bec2dc061d6b",
+    "serving_metrics.py": "1ab2b8dc72fcae7a64830a687198497782cd15b1cc7ad58935e98661396004e7",
+    "verify_historical.py": "a1f4abfa0e621280b6e57903cf99d77581db34057a8ffd12265a94917118abf9",
+    "tests/test_serving_metrics.py": "3d857c2ed54dd2787b4c6a52992223c0745e907c8c948b3ab5db991484f71363",
+    "tests/test_historical.py": "f5a1a11ab20bbfa4617506dfa90fabd5a177be9f14e9fc8683287e7b913e36ed",
+    ".gitattributes": "04c07157682e63b79e37e19b0a6dae1197e99882226c068438dfaf2a79779df8",
+    ".github/workflows/offline-integrity.yml": "9ab74bf1ee84b3d2ce2346dc2c7cc6434889c2c00b68a566bb9b7d2024651a0a",
+    "historical/d933443/manifest.json": "be533ac9e83ed6c1a89c913b7679cff7d266315df2bdacc3f79b628ea51a27ab",
+    "tests/fixtures/http_500.json": "302c9e0aaff565ca1c8e6e7c46f314e1836f996df505e692248375f473f399ca",
+    "tests/fixtures/missing_usage.sse": "ee4edd6ec39dc3177b674b28d954b53f5eb94c0776b2bbe85f994a10f1050475",
+    "tests/fixtures/no_done.sse": "d7a2d26c279faf1b81a48e1562846185db3e26db5a358fd638e80ef770655d42",
+    "tests/fixtures/normal.sse": "998893cee3efac6fcfd74788094c809a5e9898ec0a7310faf471ff2f8498bb67",
+    "tests/fixtures/server_error.sse": "16e9be35fab1e47533c06aa25c06cab8c23b43e61d77fb28ed3ca8e6330dfd58"
+  },
+  "measurement_boundary": {
+    "fixtures": "Synthetic HTTP/SSE wire bytes through the production parser and fake transport; no actual server compatibility or performance claim.",
+    "inference_requests": 0,
+    "model_or_weight_downloads": 0,
+    "gpu_jobs": 0,
+    "historical_metrics_recomputed": false,
+    "historical_raw_and_notebooks_unchanged": true,
+    "historical_failure_inference": "Offline failure cases do not establish whether old real sessions were affected."
+  },
+  "readme_historical_table_rows_unchanged": 110
+}
