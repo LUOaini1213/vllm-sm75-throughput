@@ -52,6 +52,7 @@ vLLM 的 batch 悬崖是这一底层现象的放大。已上报 PyTorch 与 vLLM
 同一对照的吞吐口径是 608.0 → 2690.2 tok/s（4.42×），但该分母含一段约 7.8 s 的未解释墙钟停顿，
 扣掉后约 857 → 2690.2 tok/s（3.14×）；**对外以 TPOT 口径 3.48× 为准**，两个口径的差与依据见
 [`results_t4/corrections_2026-09-13.txt`](results_t4/corrections_2026-09-13.txt)。
+**按顶部 2026-09-18 更正，3.48×、4.42×、3.14× 都来自旧客户端的内容片段计数，只是历史近似统计量，不是纯优化收益。**
 → 第 D 节的「（2026-09-08）干预实验做完了，根因坐实」
 
 两条线的关系：第一条是 GTX 1650 上「为什么 batch 一大就崩」，第二条是把同一个问句
@@ -117,8 +118,10 @@ vLLM 直接回落 `TRITON_ATTN`。这是「同一份 vLLM，换张卡就是另�
 TPOT 在并发 2→32 之间恒定在 180~185 ms —— **每步耗时与实际 batch 无关**，
 这是「有个固定开销在主导」的典型特征。
 
-这一轮本身的 JSON 没有留下来：`bench_serving.py` 把结果固定写到同名的 `sweep_results.json`
-（源码第 82 行，文件名写死、不带时间戳），后跑的 `--enforce-eager` 对照轮把它覆盖了。
+这一轮本身的 JSON 没有留下来：旧版 `bench_serving.py` 把结果固定写到同名的 `sweep_results.json`
+（冻结副本 [`historical/d933443/bench_serving.py.txt`](historical/d933443/bench_serving.py.txt) 第 82 行，
+文件名写死、不带时间戳），后跑的 `--enforce-eager` 对照轮把它覆盖了。
+2026-10-12 修订后的客户端改写 `sweep_results_v2.json`，不再覆盖这个旧文件名。
 留下来的是那个对照轮，已原样收进仓里：
 [`results_local/gtx1650_sweep_enforce_eager_2026-09-02.json`](results_local/gtx1650_sweep_enforce_eager_2026-09-02.json)
 —— 它并发 1 的 TPOT 19.13 ms 就是下一节表里 `--enforce-eager` 那一行的来源。
@@ -229,7 +232,8 @@ bash serve.sh
 # 对照组：--enforce-eager，其余参数与 serve.sh 完全一致
 bash serve_eager.sh
 
-# 并发扫描，产出 sweep_results.json（用法见文件 docstring）
+# 并发扫描。当前是 2026-10-12 修订后的 schema v2 客户端，产出 sweep_results_v2.json，
+# 吞吐取服务端 usage，与第二节旧客户端的口径不同（见 docs/serving-integrity.md）
 python bench_serving.py
 # 前缀复用对照
 python bench_serving.py --prefix-test
@@ -471,6 +475,8 @@ T4 是 15360 MiB，落在第一档，源码注释直接写着 `# T4, 4080`。该
 另外三个直接看表就能看出的矛盾（不用任何反推）：A 组吞吐 batch 24 的 670.0 > batch 32 的 608.0；
 B32 ÷ A32 的吞吐比 1.41× 与同表 TPOT 比 1.02× 打架；默认后端 D32 的 945.6 tok/s 同样远高于 608.0。
 逐格偏差表与全部依据：[`results_t4/corrections_2026-09-13.txt`](results_t4/corrections_2026-09-13.txt)。
+**按顶部 2026-09-18 更正，这张表的吞吐与 TPOT 都由旧客户端按非空内容片段计数得出，
+表里所有比值（含 3.48× 与 4.42×）只是历史近似统计量，不能当作纯优化收益引用。**
 
 **仍未做**：vLLM 侧反向复现（把捕获桶砍到 `[1,2,4,8]`）。在跑出来之前只能说
 「这是 SGLang 上的因果实证」，**不能说「这是图捕获分桶的通用机制」**。
@@ -539,3 +545,7 @@ D_default_backend@4 三格超阈值，它们在脚本里是**具名白名单**�
 那个 `\n` 被展开成了真换行，字符串断成两行 —— 正是它第 1 条规则针对的那种坑。
 这个 bug 从 2026-09-02 提交（commit 3ac55fb）躺到 09-13 才被发现，因为脚本的默认文件表当时硬编码成两个文件名，
 11 份 notebook 只量了 2 份。
+
+2026-10-12 合进来的另一条工作流 [`.github/workflows/offline-integrity.yml`](.github/workflows/offline-integrity.yml)
+还跑两样：`tests/` 下的离线协议单测，以及 `verify_historical.py` 对历史文件与旧客户端冻结副本的字节校验，
+详见 [`docs/serving-integrity.md`](docs/serving-integrity.md)。

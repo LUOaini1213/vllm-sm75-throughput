@@ -4,7 +4,8 @@
 
 ## `gtx1650_sweep_enforce_eager_2026-09-02.json`
 
-- **它是什么**：`bench_serving.py` 的 `sweep()` 直接 `json.dump` 出来的原始结果，
+- **它是什么**：旧版 `bench_serving.py`（2026-10-12 修订前，冻结副本
+  `historical/d933443/bench_serving.py.txt`）的 `sweep()` 直接 `json.dump` 出来的原始结果，
   不是手抄、不是整理稿。原位置 `~/vllmbench/sweep_results.json`（WSL2 Ubuntu-24.04），
   文件时间 **2026-09-02 17:20:17**，1382 字节，
   `sha256 = 54dff497ad6004fc8547dd07a3349905614117febfffe3e3bda6bd959ee17b44`。
@@ -18,7 +19,7 @@
 - **它不是什么**：**不是 README 第二节那张表的来源。**
   第二节并发 1 是 119.5 tok/s / TPOT 7.20 ms，本文件是 47.47 tok/s / 19.13 ms。
   第二节那一轮（CUDA Graph 正常开启）的 JSON 没有留下来 ——
-  `bench_serving.py:82` 把结果固定写到同名的 `sweep_results.json`，文件名写死、不带时间戳，
+  旧版 `bench_serving.py` 第 82 行把结果固定写到同名的 `sweep_results.json`，文件名写死、不带时间戳，
   后跑的这一轮把前一轮覆盖了。第二节那张表目前只有 README 里的抄写版。
 
 ## 这半边还缺什么
