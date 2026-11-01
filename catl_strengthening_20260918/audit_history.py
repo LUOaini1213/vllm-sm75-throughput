@@ -37,7 +37,7 @@ def main():
                 "flagged": abs(row["wall"] - expected) / row["wall"] > .15})
     a, c = rows["A_default"][32], rows["C_maxbs32"][32]
     expected_a = 4 * (a["ttft"] + 127 * a["tpot"]) / 1000
-    inputs = ["check_claims.py", "cloud_dip_confirm_executed.ipynb", "bench_serving.py",
+    inputs = ["check_claims.py", "cloud_dip_confirm_executed.ipynb", "historical/d933443/bench_serving.py.txt",
               "results_t4/dip_causal_2026-09-08.txt", "results_t4/corrections_2026-09-13.txt"]
     report = {"kind": "historical_recalculation_no_new_measurement", "rows": findings,
               "preferred_historical_tpot_speedup": a["tpot"] / c["tpot"],

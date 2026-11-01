@@ -4,7 +4,7 @@
 这仓的测量全在 Colab T4 上做，GPU 那部分进不了 CI。能进 CI 的是另一半：
 **日志解析 + 数字回算**。本脚本做九组检查：
 
-  1  口径     probe.py / bench_serving.py 的 max_tokens 与请求数公式没被改过
+  1  口径     probe.py / 旧 bench_serving.py（冻结副本）的 max_tokens 与请求数公式没被改过
   2  双来源   notebook 的真实 cell 输出 与 results_t4/*.txt 的转写逐格一致
   3  每请求   墙钟 × 吞吐 ÷ 请求数 == 128 token/请求（口径的独立验证）
   4  自洽     墙钟 ≈ (请求数/并发) × (TTFT + 127×TPOT)，逐格给偏差
@@ -32,6 +32,9 @@ CORR = os.path.join("results_t4", "corrections_2026-09-13.txt")
 GEMM = os.path.join("results_t4", "t4_gemm_control.txt")
 LOCAL_JSON = os.path.join("results_local",
                           "gtx1650_sweep_enforce_eager_2026-09-02.json")
+# 历史表格是旧客户端测的。2026-10-12 起根目录的 bench_serving.py 换成了 schema v2 客户端，
+# 旧客户端的原始字节冻结在这里（verify_historical.py 核它的 sha256 与 d933443 源码）。
+OLD_BENCH = os.path.join("historical", "d933443", "bench_serving.py.txt")
 
 MAX_TOKENS = 128          # probe.py / bench_serving.py 的 --max-tokens 默认值
 WALL_TOL = 0.15           # |墙钟 − 自洽值| / 墙钟 的阈值
@@ -94,17 +97,17 @@ def check_protocol():
     ok(re.search(r"max\(c\s*\*\s*4,\s*16\)", writer) is not None,
        "probe.py 每档请求数是 max(4×并发, 16)")
 
-    bs = read("bench_serving.py")
+    bs = read(OLD_BENCH)
     ok('ap.add_argument("--max-tokens", type=int, default=128)' in bs,
-       "bench_serving.py 的 --max-tokens 默认值是 128")
+       "旧 bench_serving.py 的 --max-tokens 默认值是 128")
     ok(re.search(r"max\(c\s*\*\s*4,\s*16\)", bs) is not None,
-       "bench_serving.py 每档请求数是 max(4×并发, 16)")
+       "旧 bench_serving.py 每档请求数是 max(4×并发, 16)")
     ok("for c in [1, 2, 4, 8, 16, 32]:" in bs,
-       "bench_serving.py 的并发列表是 [1, 2, 4, 8, 16, 32]")
+       "旧 bench_serving.py 的并发列表是 [1, 2, 4, 8, 16, 32]")
 
     # SHARED_PREFIX 的长度：README 写的是 2380 字符
     m = re.search(r'SHARED_PREFIX = \(\s*(.*?)\)\s*\n', bs, re.S)
-    ok(m is not None, "bench_serving.py 里找得到 SHARED_PREFIX 的定义")
+    ok(m is not None, "旧 bench_serving.py 里找得到 SHARED_PREFIX 的定义")
     if m:
         parts = re.findall(r'"((?:[^"\\]|\\.)*)"', m.group(1))
         mult = re.search(r"\*\s*(\d+)", m.group(1))
@@ -371,7 +374,7 @@ def check_local(readme):
         if len(v) == 5:
             rows[int(v[0])] = dict(wall=v[1], tput=v[2], ttft=v[3], tpot=v[4])
     ok(sorted(rows) == [1, 2, 4, 8, 16, 32],
-       "第二节表的并发列 %s 与 bench_serving.py 的扫描列表一致" % sorted(rows))
+       "第二节表的并发列 %s 与旧 bench_serving.py 的扫描列表一致" % sorted(rows))
     for conc in sorted(rows):
         r = rows[conc]
         tok = r["wall"] * r["tput"] / n_req(conc)
@@ -420,7 +423,9 @@ def check_local(readme):
 EXTERNAL = {
     "python/sglang/srt/arg_groups/memory_hook.py": "SGLang v0.5.19 上游源码",
     "marlin_utils.py": "vLLM v0.28.0 上游源码",
-    "sweep_results.json": "bench_serving.py 每次运行覆盖写出的产物，仓里只留 results_local/ 那一份",
+    "sweep_results.json": "旧 bench_serving.py 每次运行覆盖写出的产物，仓里只留 results_local/ 那一份",
+    "sweep_results_v2.json": "2026-10-12 修订后的 bench_serving.py 运行时写出的产物，不入库",
+    "probe.py": "cloud_dip_confirm_executed.ipynb 里由 cell 现写出来的压测脚本（第 1 组从 notebook 里核它）",
 }
 
 
