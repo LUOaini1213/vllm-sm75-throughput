@@ -1,0 +1,122 @@
+check_claims.py —— 从产物回算 README 里的数字（纯 CPU）
+========================================================================
+[1] 压测口径
+    ok   notebook 里找得到写出 probe.py 的那个 cell
+    ok   probe.py 的 --max-tokens 默认值是 128
+    ok   probe.py 每档请求数是 max(4×并发, 16)
+    ok   bench_serving.py 的 --max-tokens 默认值是 128
+    ok   bench_serving.py 每档请求数是 max(4×并发, 16)
+    ok   bench_serving.py 的并发列表是 [1, 2, 4, 8, 16, 32]
+    ok   bench_serving.py 里找得到 SHARED_PREFIX 的定义
+    ok   SHARED_PREFIX 长度 2380 == README 写的 2380 字符
+[2] 两个来源逐格一致（notebook 真实输出 vs txt 转写）
+    ok   64 个格子逐个相同
+    ok   notebook 里正好四组：A_default, B_nograph, C_maxbs32, D_default_backend
+[3] 每请求输出 token 数（墙钟 × 吞吐 ÷ 请求数）
+    ok   23 个格子全部落在 128 ± 2 token/请求
+[4] 墙钟自洽：墙钟 ≈ (请求数/并发) × (TTFT + 127×TPOT)
+         A_default          bs=4   预期    3.20s 实测   11.38s 偏差 +255.6% 离群
+    ok   A_default@4 仍是已知离群格（差占实测墙钟 71.9%）—— dip_causal_2026-09-08.txt 第六节第 3 条已记：墙钟 11.38s 但 TPOT 5.70ms 正常，与 sglang_outliers_repeat_2026-09-05.txt 的「并发 4 间歇不稳定」同一现象
+         A_default          bs=8   预期    3.55s 实测    3.57s 偏差   +0.7%     
+    ok   A_default@8 与自洽值的差占实测墙钟 0.7% < 15%
+         A_default          bs=12  预期   17.88s 实测   18.17s 偏差   +1.6%     
+    ok   A_default@12 与自洽值的差占实测墙钟 1.6% < 15%
+         A_default          bs=16  预期   18.35s 实测   18.54s 偏差   +1.0%     
+    ok   A_default@16 与自洽值的差占实测墙钟 1.0% < 15%
+         A_default          bs=24  预期   17.42s 实测   18.33s 偏差   +5.2%     
+    ok   A_default@24 与自洽值的差占实测墙钟 5.0% < 15%
+         A_default          bs=32  预期   19.12s 实测   26.92s 偏差  +40.8% 离群
+    ok   A_default@32 仍是已知离群格（差占实测墙钟 29.0%）—— corrections_2026-09-13.txt：同一签名第三次出现，7.8s 停顿不在解码里；该格吞吐 608.0 已更正为按自洽值折算的 856.8
+         B_nograph          bs=4   预期   17.71s 实测   20.22s 偏差  +14.1%     
+    ok   B_nograph@4 与自洽值的差占实测墙钟 12.4% < 15%
+         B_nograph          bs=8   预期   16.82s 实测   16.59s 偏差   -1.4%     
+    ok   B_nograph@8 与自洽值的差占实测墙钟 1.4% < 15%
+         B_nograph          bs=12  预期   17.62s 实测   17.17s 偏差   -2.6%     
+    ok   B_nograph@12 与自洽值的差占实测墙钟 2.6% < 15%
+         B_nograph          bs=16  预期   17.79s 实测   17.70s 偏差   -0.5%     
+    ok   B_nograph@16 与自洽值的差占实测墙钟 0.5% < 15%
+         B_nograph          bs=24  预期   18.11s 实测   17.83s 偏差   -1.5%     
+    ok   B_nograph@24 与自洽值的差占实测墙钟 1.5% < 15%
+         B_nograph          bs=32  预期   19.32s 实测   19.11s 偏差   -1.1%     
+    ok   B_nograph@32 与自洽值的差占实测墙钟 1.1% < 15%
+         C_maxbs32          bs=4   预期    3.29s 实测    3.56s 偏差   +8.2%     
+    ok   C_maxbs32@4 与自洽值的差占实测墙钟 7.6% < 15%
+         C_maxbs32          bs=8   预期    4.51s 实测    4.53s 偏差   +0.4%     
+    ok   C_maxbs32@8 与自洽值的差占实测墙钟 0.4% < 15%
+         C_maxbs32          bs=12  预期    4.30s 实测    4.48s 偏差   +4.3%     
+    ok   C_maxbs32@12 与自洽值的差占实测墙钟 4.1% < 15%
+         C_maxbs32          bs=16  预期    4.48s 实测    4.49s 偏差   +0.2%     
+    ok   C_maxbs32@16 与自洽值的差占实测墙钟 0.2% < 15%
+         C_maxbs32          bs=24  预期    5.69s 实测    5.76s 偏差   +1.2%     
+    ok   C_maxbs32@24 与自洽值的差占实测墙钟 1.2% < 15%
+         C_maxbs32          bs=32  预期    6.04s 实测    6.08s 偏差   +0.6%     
+    ok   C_maxbs32@32 与自洽值的差占实测墙钟 0.6% < 15%
+         D_default_backend  bs=4   预期    3.18s 实测   24.19s 偏差 +661.0% 离群
+    ok   D_default_backend@4 仍是已知离群格（差占实测墙钟 86.9%）—— 同上，dip_causal_2026-09-08.txt 第六节第 3 条已记：墙钟 24.19s、TPOT 5.82ms 正常
+         D_default_backend  bs=8   预期    3.53s 实测    3.53s 偏差   -0.1%     
+    ok   D_default_backend@8 与自洽值的差占实测墙钟 0.1% < 15%
+         D_default_backend  bs=12  预期   15.66s 实测   15.76s 偏差   +0.7%     
+    ok   D_default_backend@12 与自洽值的差占实测墙钟 0.7% < 15%
+         D_default_backend  bs=16  预期   17.02s 实测   16.84s 偏差   -1.0%     
+    ok   D_default_backend@16 与自洽值的差占实测墙钟 1.0% < 15%
+         D_default_backend  bs=32  预期   16.25s 实测   17.30s 偏差   +6.4%     
+    ok   D_default_backend@32 与自洽值的差占实测墙钟 6.1% < 15%
+[5] README 第 D 节的表与比值
+    ok   TPOT 行「A 默认」= [5.7, 6.29, 34.27, 35.0, 32.8, 35.74]
+    ok   TPOT 行「B 关解码图」= [34.17, 32.32, 33.77, 33.91, 34.15, 36.31]
+    ok   TPOT 行「C 上限抬到 32」= [5.85, 7.88, 7.52, 7.74, 9.71, 10.26]
+    ok   B ÷ A 行 [6.0, 5.14, 0.99, 0.97, 1.04, 1.02] ≈ 回算 [5.99, 5.14, 0.99, 0.97, 1.04, 1.02]（容差 0.02）
+    ok   吞吐比 C ÷ A 行 [4.05, 4.12, 3.18, 4.42] ≈ 回算 [4.05, 4.12, 3.18, 4.42]（容差 0.02）
+    ok   TPOT 比 A ÷ C 行 [4.56, 4.52, 3.38, 3.48] ≈ 回算 [4.56, 4.52, 3.38, 3.48]（容差 0.02）
+    ok   README 写出了 608.0 → 2690.2 的绝对值（面试官会 Ctrl+F 这个数）
+    ok   导航块里的 35.74 → 10.26 ms 与 notebook 输出一致
+[6] corrections_2026-09-13.txt 的更正数
+    ok   A32 自洽墙钟回算 = 19.1219 s → 19.12
+    ok   更正文件里的 19.12 / 26.92 / +40.8% 与回算一致
+    ok   A32 折算吞吐回算 = 856.82 tok/s → 856.8
+    ok   更正文件里写的是 856.8 tok/s
+    ok   C ÷ A（扣停顿）回算 = 3.1398 → 3.14×
+    ok   更正文件里写的是 3.14x
+    ok   停顿时长回算 = 7.798 s → 7.80 s
+    ok   矛盾一：A32 吞吐 608.0 < A24 670.0
+    ok   矛盾二：B32 ÷ A32 吞吐 = 1.41×，而同表 TPOT 比是 1.02×
+    ok   矛盾三：D32 吞吐 945.6 > A32 608.0
+    ok   折算值 856.8 与同轮 B32 实测 856.6 相差 0.0%
+    ok   README 导航块写明以 TPOT 口径 3.48× 为准
+    ok   README 第 D 节同样写明
+[7] README 第一屏的 GEMM 对照表 vs t4_gemm_control.txt
+    ok   结果文件里解析出 fp16 三组形状的 M=1 / M=2 行
+    ok   T4 行 [106.7, 88.1] GiB/s == 结果文件 106.7 / 88.1
+    ok   T4 行的 0.83× == 88.1 / 106.7
+    ok   README 里找得到「三组形状一致（…）」
+    ok   三组形状 [0.83, 0.85, 0.86] == 结果文件 [0.83, 0.85, 0.86]
+    ok   GTX 1650 行 99.5 → 4.3 与结果文件结论段的抄写一致
+[8] README 第二节的表 与 results_local/ 的那份 JSON
+    ok   第二节表的并发列 [1, 2, 4, 8, 16, 32] 与 bench_serving.py 的扫描列表一致
+    ok   并发 1   127.6 token/请求，墙钟 17.08 vs 自洽 16.99（+0.5%）
+    ok   并发 2   127.6 token/请求，墙钟 185.53 vs 自洽 185.20（+0.2%）
+    ok   并发 4   128.1 token/请求，墙钟 93.13 vs 自洽 93.20（-0.1%）
+    ok   并发 8   128.0 token/请求，墙钟 93.27 vs 自洽 93.27（+0.0%）
+    ok   并发 16  127.9 token/请求，墙钟 95.65 vs 自洽 96.02（-0.4%）
+    ok   并发 32  127.5 token/请求，墙钟 98.49 vs 自洽 96.95（+1.6%）
+    ok   JSON 的并发列 [1, 2, 4, 8, 16, 32]
+    ok   JSON 并发 1  127.8 token/请求，墙钟 43.06 vs 自洽 41.20（+4.5%）
+    ok   JSON 并发 2  127.6 token/请求，墙钟 188.97 vs 自洽 189.92（-0.5%）
+    ok   JSON 并发 4  128.0 token/请求，墙钟 94.32 vs 自洽 93.91（+0.4%）
+    ok   JSON 并发 8  128.0 token/请求，墙钟 95.21 vs 自洽 94.31（+1.0%）
+    ok   JSON 并发 16 128.0 token/请求，墙钟 97.08 vs 自洽 96.22（+0.9%）
+    ok   JSON 并发 32 127.5 token/请求，墙钟 100.95 vs 自洽 98.47（+2.5%）
+    ok   JSON 的 sha256 54dff497ad6004fc 与 results_local/README.md 记的一致
+    ok   README 第三节里找得到「7.20 vs xx ms」那条
+    ok   JSON 并发 1 的 TPOT 19.127 ms == README 里的 19.13 ms（这就是归属依据）
+    ok   JSON 并发 1 吞吐 47.5 ≠ 第二节表的 119.5 —— 两轮不同，README 里已写明
+[9] README 提到的仓内文件都存在
+    ok   31 个反引号文件名全部存在（另有 3 个已声明在仓外）
+    ok   所有仓内相对链接可达
+    ok   notebook 表列了全部 11 份
+    ok   README 写的份数与实际 11 份一致
+========================================================================
+    note marlin_utils.py —— vLLM v0.28.0 上游源码
+    note python/sglang/srt/arg_groups/memory_hook.py —— SGLang v0.5.19 上游源码
+    note sweep_results.json —— bench_serving.py 每次运行覆盖写出的产物，仓里只留 results_local/ 那一份
+全部通过。

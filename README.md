@@ -1,5 +1,7 @@
 # sm_75 推理吞吐分析：GTX 1650 上的 fp16 GEMM 塌陷，与 Tesla T4 上的解码 CUDA graph 捕获上限
 
+> **2026-09-18 流式计数更正：**旧 `bench_serving.py` 与 notebook 中 `probe.py` 将每个非空 `delta.content` 计为一个 token，未保存服务端 usage/token IDs。旧表中的 TPOT、tok/s 应读作内容片段计数下的近似间隔和吞吐，不能独立证明严格 token 性能；TTFT 是首个非空内容到达时间。batch32 35.74→10.26 ms 的 3.48 倍仅属于历史近似统计量，4.42 倍旧吞吐还含未解释墙钟停顿，不应作为纯优化收益。新的压测、token ID/usage 核对与本机测试单独保存在 [`catl_strengthening_20260918/`](catl_strengthening_20260918/)，不与历史 T4 测量合并。
+
 [![CI](https://github.com/LUOaini1213/vllm-sm75-throughput/actions/workflows/ci.yml/badge.svg)](https://github.com/LUOaini1213/vllm-sm75-throughput/actions/workflows/ci.yml)
 
 > ### ✅ 验证状态（2026-09-02 已确认）

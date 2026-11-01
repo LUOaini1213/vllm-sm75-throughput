@@ -1,0 +1,3232 @@
+{
+  "label": "fp32",
+  "model": "Qwen/Qwen2.5-0.5B-Instruct",
+  "url": "http://127.0.0.1:8018/v1/chat/completions",
+  "dataset_sha256": "4cd47589ca6f76fea60bd9406d064e80e24d648713244acef9af254be9e98bc9",
+  "kind": "fixed_local_smoke_tasks_not_general_accuracy",
+  "results": [
+    {
+      "id": "arith_1",
+      "category": "arithmetic",
+      "prompt": "Return only the integer result of 17 + 26.",
+      "answer": "43",
+      "record": {
+        "id": "arith_1",
+        "client_queue_ms": 0.0,
+        "body": {
+          "model": "Qwen/Qwen2.5-0.5B-Instruct",
+          "messages": [
+            {
+              "role": "user",
+              "content": "Return only the integer result of 17 + 26."
+            }
+          ],
+          "max_tokens": 48,
+          "temperature": 0,
+          "seed": 42,
+          "stream": true,
+          "stream_options": {
+            "include_usage": true
+          },
+          "return_token_ids": true
+        },
+        "events": [
+          {
+            "elapsed_s": 0.002427482000001646,
+            "token_ids": [],
+            "content": ""
+          },
+          {
+            "elapsed_s": 0.06062845399998196,
+            "token_ids": [
+              785
+            ],
+            "content": "The"
+          },
+          {
+            "elapsed_s": 0.08855741899998293,
+            "token_ids": [
+              7546
+            ],
+            "content": " integer"
+          },
+          {
+            "elapsed_s": 0.13563026599999262,
+            "token_ids": [
+              1102
+            ],
+            "content": " result"
+          },
+          {
+            "elapsed_s": 0.16320942900000546,
+            "token_ids": [
+              315
+            ],
+            "content": " of"
+          },
+          {
+            "elapsed_s": 0.19269419399998355,
+            "token_ids": [
+              220
+            ],
+            "content": " "
+          },
+          {
+            "elapsed_s": 0.22196833399999605,
+            "token_ids": [
+              16
+            ],
+            "content": "1"
+          },
+          {
+            "elapsed_s": 0.26929739799999197,
+            "token_ids": [
+              22
+            ],
+            "content": "7"
+          },
+          {
+            "elapsed_s": 0.29687220200000297,
+            "token_ids": [
+              488
+            ],
+            "content": " +"
+          },
+          {
+            "elapsed_s": 0.3308178279999936,
+            "token_ids": [
+              220
+            ],
+            "content": " "
+          },
+          {
+            "elapsed_s": 0.38435775700000363,
+            "token_ids": [
+              17
+            ],
+            "content": "2"
+          },
+          {
+            "elapsed_s": 0.4136798719999888,
+            "token_ids": [
+              21
+            ],
+            "content": "6"
+          },
+          {
+            "elapsed_s": 0.439208887999996,
+            "token_ids": [
+              374
+            ],
+            "content": " is"
+          },
+          {
+            "elapsed_s": 0.47629318799999965,
+            "token_ids": [
+              220
+            ],
+            "content": " "
+          },
+          {
+            "elapsed_s": 0.515449263999983,
+            "token_ids": [
+              19
+            ],
+            "content": "4"
+          },
+          {
+            "elapsed_s": 0.555773902999988,
+            "token_ids": [
+              18
+            ],
+            "content": "3"
+          },
+          {
+            "elapsed_s": 0.5996654169999829,
+            "token_ids": [
+              13
+            ],
+            "content": "."
+          },
+          {
+            "elapsed_s": 0.6354411270000071,
+            "token_ids": [
+              151645
+            ],
+            "content": ""
+          },
+          {
+            "elapsed_s": 0.6354411270000071,
+            "token_ids": [],
+            "content": ""
+          }
+        ],
+        "status": "success",
+        "done": true,
+        "http_status": 200,
+        "usage": {
+          "prompt_tokens": 43,
+          "completion_tokens": 17,
+          "total_tokens": 60
+        },
+        "error": null,
+        "finish_reason": "stop",
+        "request_wall_s": 0.6354893520000076,
+        "token_ids": [
+          785,
+          7546,
+          1102,
+          315,
+          220,
+          16,
+          22,
+          488,
+          220,
+          17,
+          21,
+          374,
+          220,
+          19,
+          18,
+          13,
+          151645
+        ],
+        "output_text": "The integer result of 17 + 26 is 43.",
+        "content_event_count": 16,
+        "stream_token_count": 17,
+        "usage_completion_tokens": 17,
+        "token_count_matches_usage": true,
+        "ttft_ms": 60.62845399998196,
+        "ttfc_ms": 60.62845399998196,
+        "ttft_including_client_queue_ms": 60.62845399998196,
+        "single_token_events": true,
+        "inter_token_arrival_ms": [
+          27.92896500000097,
+          47.07284700000969,
+          27.57916300001284,
+          29.484764999978097,
+          29.274140000012494,
+          47.329063999995924,
+          27.574804000011,
+          33.945625999990625,
+          53.539929000010034,
+          29.32211499998516,
+          25.529016000007232,
+          37.08430000000362,
+          39.156075999983386,
+          40.324639000004936,
+          43.89151399999491,
+          35.77571000002422
+        ],
+        "tpot_ms": 35.92579206250157
+      },
+      "exact_match": false
+    },
+    {
+      "id": "arith_2",
+      "category": "arithmetic",
+      "prompt": "A shipment has 12 boxes with 8 cells in each box. Return only the total number of cells.",
+      "answer": "96",
+      "record": {
+        "id": "arith_2",
+        "client_queue_ms": 0.0,
+        "body": {
+          "model": "Qwen/Qwen2.5-0.5B-Instruct",
+          "messages": [
+            {
+              "role": "user",
+              "content": "A shipment has 12 boxes with 8 cells in each box. Return only the total number of cells."
+            }
+          ],
+          "max_tokens": 48,
+          "temperature": 0,
+          "seed": 42,
+          "stream": true,
+          "stream_options": {
+            "include_usage": true
+          },
+          "return_token_ids": true
+        },
+        "events": [
+          {
+            "elapsed_s": 0.0013272080000206188,
+            "token_ids": [],
+            "content": ""
+          },
+          {
+            "elapsed_s": 0.05485106900002279,
+            "token_ids": [
+              1249
+            ],
+            "content": "To"
+          },
+          {
+            "elapsed_s": 0.09665854300001797,
+            "token_ids": [
+              1477
+            ],
+            "content": " find"
+          },
+          {
+            "elapsed_s": 0.12287079200001472,
+            "token_ids": [
+              279
+            ],
+            "content": " the"
+          },
+          {
+            "elapsed_s": 0.1711233370000116,
+            "token_ids": [
+              2790
+            ],
+            "content": " total"
+          },
+          {
+            "elapsed_s": 0.2198319080000033,
+            "token_ids": [
+              1372
+            ],
+            "content": " number"
+          },
+          {
+            "elapsed_s": 0.2667672530000118,
+            "token_ids": [
+              315
+            ],
+            "content": " of"
+          },
+          {
+            "elapsed_s": 0.2943572460000041,
+            "token_ids": [
+              7761
+            ],
+            "content": " cells"
+          },
+          {
+            "elapsed_s": 0.33658039100001247,
+            "token_ids": [
+              304
+            ],
+            "content": " in"
+          },
+          {
+            "elapsed_s": 0.3712268830000198,
+            "token_ids": [
+              279
+            ],
+            "content": " the"
+          },
+          {
+            "elapsed_s": 0.3996684930000072,
+            "token_ids": [
+              43754
+            ],
+            "content": " shipment"
+          },
+          {
+            "elapsed_s": 0.4275628020000113,
+            "token_ids": [
+              11
+            ],
+            "content": ","
+          },
+          {
+            "elapsed_s": 0.4561822020000079,
+            "token_ids": [
+              498
+            ],
+            "content": " you"
+          },
+          {
+            "elapsed_s": 0.486782087000023,
+            "token_ids": [
+              4936
+            ],
+            "content": " simply"
+          },
+          {
+            "elapsed_s": 0.5183271960000013,
+            "token_ids": [
+              30270
+            ],
+            "content": " multiply"
+          },
+          {
+            "elapsed_s": 0.5520554920000222,
+            "token_ids": [
+              279
+            ],
+            "content": " the"
+          },
+          {
+            "elapsed_s": 0.5898342720000187,
+            "token_ids": [
+              1372
+            ],
+            "content": " number"
+          },
+          {
+            "elapsed_s": 0.6218809380000039,
+            "token_ids": [
+              315
+            ],
+            "content": " of"
+          },
+          {
+            "elapsed_s": 0.6706280510000227,
+            "token_ids": [
+              14697
+            ],
+            "content": " boxes"
+          },
+          {
+            "elapsed_s": 0.6999101690000202,
+            "token_ids": [
+              553
+            ],
+            "content": " by"
+          },
+          {
+            "elapsed_s": 0.7377574590000222,
+            "token_ids": [
+              279
+            ],
+            "content": " the"
+          },
+          {
+            "elapsed_s": 0.7782912590000137,
+            "token_ids": [
+              1372
+            ],
+            "content": " number"
+          },
+          {
+            "elapsed_s": 0.825295906000008,
+            "token_ids": [
+              315
+            ],
+            "content": " of"
+          },
+          {
+            "elapsed_s": 0.8513262860000168,
+            "token_ids": [
+              7761
+            ],
+            "content": " cells"
+          },
+          {
+            "elapsed_s": 0.885243829000018,
+            "token_ids": [
+              304
+            ],
+            "content": " in"
+          },
+          {
+            "elapsed_s": 0.911240773000003,
+            "token_ids": [
+              1817
+            ],
+            "content": " each"
+          },
+          {
+            "elapsed_s": 0.9388229630000069,
+            "token_ids": [
+              3745
+            ],
+            "content": " box"
+          },
+          {
+            "elapsed_s": 0.9636591440000188,
+            "token_ids": [
+              13
+            ],
+            "content": "."
+          },
+          {
+            "elapsed_s": 1.0054809370000157,
+            "token_ids": [
+              5692
+            ],
+            "content": " Here"
+          },
+          {
+            "elapsed_s": 1.030544931999998,
+            "token_ids": [
+              594
+            ],
+            "content": "'s"
+          },
+          {
+            "elapsed_s": 1.0716424370000084,
+            "token_ids": [
+              279
+            ],
+            "content": " the"
+          },
+          {
+            "elapsed_s": 1.1002345020000064,
+            "token_ids": [
+              21937
+            ],
+            "content": " calculation"
+          },
+          {
+            "elapsed_s": 1.1365933490000089,
+            "token_ids": [
+              1447
+            ],
+            "content": ":\n\n"
+          },
+          {
+            "elapsed_s": 1.1642282870000145,
+            "token_ids": [
+              16
+            ],
+            "content": "1"
+          },
+          {
+            "elapsed_s": 1.2097466990000214,
+            "token_ids": [
+              17
+            ],
+            "content": "2"
+          },
+          {
+            "elapsed_s": 1.2392637400000126,
+            "token_ids": [
+              14697
+            ],
+            "content": " boxes"
+          },
+          {
+            "elapsed_s": 1.2812218650000204,
+            "token_ids": [
+              353
+            ],
+            "content": " *"
+          },
+          {
+            "elapsed_s": 1.3087557660000186,
+            "token_ids": [
+              220
+            ],
+            "content": " "
+          },
+          {
+            "elapsed_s": 1.3396444239999994,
+            "token_ids": [
+              23
+            ],
+            "content": "8"
+          },
+          {
+            "elapsed_s": 1.3669016820000195,
+            "token_ids": [
+              7761
+            ],
+            "content": " cells"
+          },
+          {
+            "elapsed_s": 1.3938599460000205,
+            "token_ids": [
+              14
+            ],
+            "content": "/"
+          },
+          {
+            "elapsed_s": 1.4248671830000035,
+            "token_ids": [
+              2011
+            ],
+            "content": "box"
+          },
+          {
+            "elapsed_s": 1.4593027770000049,
+            "token_ids": [
+              284
+            ],
+            "content": " ="
+          },
+          {
+            "elapsed_s": 1.5234807280000098,
+            "token_ids": [
+              220
+            ],
+            "content": " "
+          },
+          {
+            "elapsed_s": 1.5521964930000252,
+            "token_ids": [
+              24
+            ],
+            "content": "9"
+          },
+          {
+            "elapsed_s": 1.5790831500000024,
+            "token_ids": [
+              21
+            ],
+            "content": "6"
+          },
+          {
+            "elapsed_s": 1.61015831200001,
+            "token_ids": [
+              7761
+            ],
+            "content": " cells"
+          },
+          {
+            "elapsed_s": 1.63953397100002,
+            "token_ids": [
+              271
+            ],
+            "content": "\n\n"
+          },
+          {
+            "elapsed_s": 1.6716693950000092,
+            "token_ids": [
+              4416
+            ],
+            "content": "So"
+          },
+          {
+            "elapsed_s": 1.6718461780000098,
+            "token_ids": [],
+            "content": ""
+          }
+        ],
+        "status": "success",
+        "done": true,
+        "http_status": 200,
+        "usage": {
+          "prompt_tokens": 52,
+          "completion_tokens": 48,
+          "total_tokens": 100
+        },
+        "error": null,
+        "finish_reason": "length",
+        "request_wall_s": 1.671930064999998,
+        "token_ids": [
+          1249,
+          1477,
+          279,
+          2790,
+          1372,
+          315,
+          7761,
+          304,
+          279,
+          43754,
+          11,
+          498,
+          4936,
+          30270,
+          279,
+          1372,
+          315,
+          14697,
+          553,
+          279,
+          1372,
+          315,
+          7761,
+          304,
+          1817,
+          3745,
+          13,
+          5692,
+          594,
+          279,
+          21937,
+          1447,
+          16,
+          17,
+          14697,
+          353,
+          220,
+          23,
+          7761,
+          14,
+          2011,
+          284,
+          220,
+          24,
+          21,
+          7761,
+          271,
+          4416
+        ],
+        "output_text": "To find the total number of cells in the shipment, you simply multiply the number of boxes by the number of cells in each box. Here's the calculation:\n\n12 boxes * 8 cells/box = 96 cells\n\nSo",
+        "content_event_count": 48,
+        "stream_token_count": 48,
+        "usage_completion_tokens": 48,
+        "token_count_matches_usage": true,
+        "ttft_ms": 54.85106900002279,
+        "ttfc_ms": 54.85106900002279,
+        "ttft_including_client_queue_ms": 54.85106900002279,
+        "single_token_events": true,
+        "inter_token_arrival_ms": [
+          41.80747399999518,
+          26.212248999996746,
+          48.25254499999687,
+          48.70857099999171,
+          46.93534500000851,
+          27.58999299999232,
+          42.223145000008344,
+          34.646492000007356,
+          28.44160999998735,
+          27.894309000004114,
+          28.61939999999663,
+          30.599885000015092,
+          31.54510899997831,
+          33.72829600002092,
+          37.77877999999646,
+          32.04666599998518,
+          48.74711300001877,
+          29.28211799999758,
+          37.847290000001976,
+          40.533799999991516,
+          47.00464699999429,
+          26.03038000000879,
+          33.91754300000116,
+          25.99694399998498,
+          27.582190000003948,
+          24.836181000011948,
+          41.82179299999689,
+          25.063994999982242,
+          41.097505000010415,
+          28.592064999998,
+          36.35884700000247,
+          27.634938000005604,
+          45.51841200000695,
+          29.517040999991195,
+          41.95812500000784,
+          27.533900999998195,
+          30.88865799998075,
+          27.2572580000201,
+          26.95826400000101,
+          31.00723699998298,
+          34.4355940000014,
+          64.1779510000049,
+          28.71576500001538,
+          26.886656999977276,
+          31.075162000007595,
+          29.375659000010046,
+          32.13542399998914
+        ],
+        "tpot_ms": 34.40038991489333
+      },
+      "exact_match": false
+    },
+    {
+      "id": "arith_3",
+      "category": "arithmetic",
+      "prompt": "Return only the integer result of 120 - 35.",
+      "answer": "85",
+      "record": {
+        "id": "arith_3",
+        "client_queue_ms": 0.0,
+        "body": {
+          "model": "Qwen/Qwen2.5-0.5B-Instruct",
+          "messages": [
+            {
+              "role": "user",
+              "content": "Return only the integer result of 120 - 35."
+            }
+          ],
+          "max_tokens": 48,
+          "temperature": 0,
+          "seed": 42,
+          "stream": true,
+          "stream_options": {
+            "include_usage": true
+          },
+          "return_token_ids": true
+        },
+        "events": [
+          {
+            "elapsed_s": 0.0009343450000187659,
+            "token_ids": [],
+            "content": ""
+          },
+          {
+            "elapsed_s": 0.06064484300000572,
+            "token_ids": [
+              785
+            ],
+            "content": "The"
+          },
+          {
+            "elapsed_s": 0.09601164300002551,
+            "token_ids": [
+              7546
+            ],
+            "content": " integer"
+          },
+          {
+            "elapsed_s": 0.12344590700001845,
+            "token_ids": [
+              1102
+            ],
+            "content": " result"
+          },
+          {
+            "elapsed_s": 0.1567237710000029,
+            "token_ids": [
+              315
+            ],
+            "content": " of"
+          },
+          {
+            "elapsed_s": 0.18471913100000847,
+            "token_ids": [
+              220
+            ],
+            "content": " "
+          },
+          {
+            "elapsed_s": 0.21476834700001746,
+            "token_ids": [
+              16
+            ],
+            "content": "1"
+          },
+          {
+            "elapsed_s": 0.2403420920000201,
+            "token_ids": [
+              17
+            ],
+            "content": "2"
+          },
+          {
+            "elapsed_s": 0.2861963730000241,
+            "token_ids": [
+              15
+            ],
+            "content": "0"
+          },
+          {
+            "elapsed_s": 0.31276711700002124,
+            "token_ids": [
+              481
+            ],
+            "content": " -"
+          },
+          {
+            "elapsed_s": 0.3451232980000043,
+            "token_ids": [
+              220
+            ],
+            "content": " "
+          },
+          {
+            "elapsed_s": 0.3900991900000008,
+            "token_ids": [
+              18
+            ],
+            "content": "3"
+          },
+          {
+            "elapsed_s": 0.4199104630000079,
+            "token_ids": [
+              20
+            ],
+            "content": "5"
+          },
+          {
+            "elapsed_s": 0.4499947879999979,
+            "token_ids": [
+              374
+            ],
+            "content": " is"
+          },
+          {
+            "elapsed_s": 0.49084870100000444,
+            "token_ids": [
+              220
+            ],
+            "content": " "
+          },
+          {
+            "elapsed_s": 0.5189916710000091,
+            "token_ids": [
+              23
+            ],
+            "content": "8"
+          },
+          {
+            "elapsed_s": 0.5523872830000016,
+            "token_ids": [
+              20
+            ],
+            "content": "5"
+          },
+          {
+            "elapsed_s": 0.584875363000009,
+            "token_ids": [
+              13
+            ],
+            "content": "."
+          },
+          {
+            "elapsed_s": 0.6354451480000023,
+            "token_ids": [
+              151645
+            ],
+            "content": ""
+          },
+          {
+            "elapsed_s": 0.6354451480000023,
+            "token_ids": [],
+            "content": ""
+          }
+        ],
+        "status": "success",
+        "done": true,
+        "http_status": 200,
+        "usage": {
+          "prompt_tokens": 44,
+          "completion_tokens": 18,
+          "total_tokens": 62
+        },
+        "error": null,
+        "finish_reason": "stop",
+        "request_wall_s": 0.6356035230000145,
+        "token_ids": [
+          785,
+          7546,
+          1102,
+          315,
+          220,
+          16,
+          17,
+          15,
+          481,
+          220,
+          18,
+          20,
+          374,
+          220,
+          23,
+          20,
+          13,
+          151645
+        ],
+        "output_text": "The integer result of 120 - 35 is 85.",
+        "content_event_count": 17,
+        "stream_token_count": 18,
+        "usage_completion_tokens": 18,
+        "token_count_matches_usage": true,
+        "ttft_ms": 60.64484300000572,
+        "ttfc_ms": 60.64484300000572,
+        "ttft_including_client_queue_ms": 60.64484300000572,
+        "single_token_events": true,
+        "inter_token_arrival_ms": [
+          35.36680000001979,
+          27.434263999992936,
+          33.27786399998445,
+          27.995360000005576,
+          30.049216000008983,
+          25.573745000002646,
+          45.85428100000399,
+          26.57074399999715,
+          32.35618099998305,
+          44.97589199999652,
+          29.811273000007077,
+          30.08432499999003,
+          40.853913000006514,
+          28.142970000004652,
+          33.395611999992525,
+          32.48808000000736,
+          50.56978499999332
+        ],
+        "tpot_ms": 33.81178264705862
+      },
+      "exact_match": false
+    },
+    {
+      "id": "arith_4",
+      "category": "arithmetic",
+      "prompt": "Return only the integer result of 144 / 12.",
+      "answer": "12",
+      "record": {
+        "id": "arith_4",
+        "client_queue_ms": 0.0,
+        "body": {
+          "model": "Qwen/Qwen2.5-0.5B-Instruct",
+          "messages": [
+            {
+              "role": "user",
+              "content": "Return only the integer result of 144 / 12."
+            }
+          ],
+          "max_tokens": 48,
+          "temperature": 0,
+          "seed": 42,
+          "stream": true,
+          "stream_options": {
+            "include_usage": true
+          },
+          "return_token_ids": true
+        },
+        "events": [
+          {
+            "elapsed_s": 0.0011286399999903551,
+            "token_ids": [],
+            "content": ""
+          },
+          {
+            "elapsed_s": 0.057175223999990976,
+            "token_ids": [
+              785
+            ],
+            "content": "The"
+          },
+          {
+            "elapsed_s": 0.0840953729999967,
+            "token_ids": [
+              7546
+            ],
+            "content": " integer"
+          },
+          {
+            "elapsed_s": 0.11331650799999693,
+            "token_ids": [
+              1102
+            ],
+            "content": " result"
+          },
+          {
+            "elapsed_s": 0.16212140899997962,
+            "token_ids": [
+              315
+            ],
+            "content": " of"
+          },
+          {
+            "elapsed_s": 0.19391205299999115,
+            "token_ids": [
+              220
+            ],
+            "content": " "
+          },
+          {
+            "elapsed_s": 0.22144512199997735,
+            "token_ids": [
+              16
+            ],
+            "content": "1"
+          },
+          {
+            "elapsed_s": 0.2508005409999896,
+            "token_ids": [
+              19
+            ],
+            "content": "4"
+          },
+          {
+            "elapsed_s": 0.2946924129999786,
+            "token_ids": [
+              19
+            ],
+            "content": "4"
+          },
+          {
+            "elapsed_s": 0.3250600869999971,
+            "token_ids": [
+              17779
+            ],
+            "content": " divided"
+          },
+          {
+            "elapsed_s": 0.3745224399999927,
+            "token_ids": [
+              553
+            ],
+            "content": " by"
+          },
+          {
+            "elapsed_s": 0.4020767139999748,
+            "token_ids": [
+              220
+            ],
+            "content": " "
+          },
+          {
+            "elapsed_s": 0.4767076589999988,
+            "token_ids": [
+              16
+            ],
+            "content": "1"
+          },
+          {
+            "elapsed_s": 0.5049635479999779,
+            "token_ids": [
+              17
+            ],
+            "content": "2"
+          },
+          {
+            "elapsed_s": 0.543286825999985,
+            "token_ids": [
+              374
+            ],
+            "content": " is"
+          },
+          {
+            "elapsed_s": 0.5740309019999756,
+            "token_ids": [
+              220
+            ],
+            "content": " "
+          },
+          {
+            "elapsed_s": 0.6188946359999932,
+            "token_ids": [
+              16
+            ],
+            "content": "1"
+          },
+          {
+            "elapsed_s": 0.656615893999998,
+            "token_ids": [
+              17
+            ],
+            "content": "2"
+          },
+          {
+            "elapsed_s": 0.6844167949999758,
+            "token_ids": [
+              13
+            ],
+            "content": "."
+          },
+          {
+            "elapsed_s": 0.7130333639999833,
+            "token_ids": [
+              151645
+            ],
+            "content": ""
+          },
+          {
+            "elapsed_s": 0.7130333639999833,
+            "token_ids": [],
+            "content": ""
+          }
+        ],
+        "status": "success",
+        "done": true,
+        "http_status": 200,
+        "usage": {
+          "prompt_tokens": 44,
+          "completion_tokens": 19,
+          "total_tokens": 63
+        },
+        "error": null,
+        "finish_reason": "stop",
+        "request_wall_s": 0.7131392119999873,
+        "token_ids": [
+          785,
+          7546,
+          1102,
+          315,
+          220,
+          16,
+          19,
+          19,
+          17779,
+          553,
+          220,
+          16,
+          17,
+          374,
+          220,
+          16,
+          17,
+          13,
+          151645
+        ],
+        "output_text": "The integer result of 144 divided by 12 is 12.",
+        "content_event_count": 18,
+        "stream_token_count": 19,
+        "usage_completion_tokens": 19,
+        "token_count_matches_usage": true,
+        "ttft_ms": 57.175223999990976,
+        "ttfc_ms": 57.175223999990976,
+        "ttft_including_client_queue_ms": 57.175223999990976,
+        "single_token_events": true,
+        "inter_token_arrival_ms": [
+          26.920149000005722,
+          29.22113500000023,
+          48.80490099998269,
+          31.790644000011525,
+          27.5330689999862,
+          29.35541900001226,
+          43.89187199998901,
+          30.367674000018496,
+          49.462352999995574,
+          27.554273999982115,
+          74.63094500002398,
+          28.255888999979106,
+          38.32327800000712,
+          30.744075999990628,
+          44.86373400001753,
+          37.72125800000481,
+          27.800900999977785,
+          28.61656900000753
+        ],
+        "tpot_ms": 36.436563333332906
+      },
+      "exact_match": false
+    },
+    {
+      "id": "lookup_1",
+      "category": "context_lookup",
+      "prompt": "Data: shipment A=25, B=40, C=19. Which shipment has the most boxes? Reply with only its letter.",
+      "answer": "B",
+      "record": {
+        "id": "lookup_1",
+        "client_queue_ms": 0.0,
+        "body": {
+          "model": "Qwen/Qwen2.5-0.5B-Instruct",
+          "messages": [
+            {
+              "role": "user",
+              "content": "Data: shipment A=25, B=40, C=19. Which shipment has the most boxes? Reply with only its letter."
+            }
+          ],
+          "max_tokens": 48,
+          "temperature": 0,
+          "seed": 42,
+          "stream": true,
+          "stream_options": {
+            "include_usage": true
+          },
+          "return_token_ids": true
+        },
+        "events": [
+          {
+            "elapsed_s": 0.0014360349999833488,
+            "token_ids": [],
+            "content": ""
+          },
+          {
+            "elapsed_s": 0.058492759999978716,
+            "token_ids": [
+              34
+            ],
+            "content": "C"
+          },
+          {
+            "elapsed_s": 0.09412795299999743,
+            "token_ids": [
+              151645
+            ],
+            "content": ""
+          },
+          {
+            "elapsed_s": 0.09412795299999743,
+            "token_ids": [],
+            "content": ""
+          }
+        ],
+        "status": "success",
+        "done": true,
+        "http_status": 200,
+        "usage": {
+          "prompt_tokens": 60,
+          "completion_tokens": 2,
+          "total_tokens": 62
+        },
+        "error": null,
+        "finish_reason": "stop",
+        "request_wall_s": 0.09420767699998578,
+        "token_ids": [
+          34,
+          151645
+        ],
+        "output_text": "C",
+        "content_event_count": 1,
+        "stream_token_count": 2,
+        "usage_completion_tokens": 2,
+        "token_count_matches_usage": true,
+        "ttft_ms": 58.492759999978716,
+        "ttfc_ms": 58.492759999978716,
+        "ttft_including_client_queue_ms": 58.492759999978716,
+        "single_token_events": true,
+        "inter_token_arrival_ms": [
+          35.63519300001872
+        ],
+        "tpot_ms": 35.63519300001872
+      },
+      "exact_match": false
+    },
+    {
+      "id": "lookup_2",
+      "category": "context_lookup",
+      "prompt": "Data: cell A temperature=28, B=32, C=25 degrees Celsius. Which cell is coolest? Reply with only its letter.",
+      "answer": "C",
+      "record": {
+        "id": "lookup_2",
+        "client_queue_ms": 0.0,
+        "body": {
+          "model": "Qwen/Qwen2.5-0.5B-Instruct",
+          "messages": [
+            {
+              "role": "user",
+              "content": "Data: cell A temperature=28, B=32, C=25 degrees Celsius. Which cell is coolest? Reply with only its letter."
+            }
+          ],
+          "max_tokens": 48,
+          "temperature": 0,
+          "seed": 42,
+          "stream": true,
+          "stream_options": {
+            "include_usage": true
+          },
+          "return_token_ids": true
+        },
+        "events": [
+          {
+            "elapsed_s": 0.001555892999988373,
+            "token_ids": [],
+            "content": ""
+          },
+          {
+            "elapsed_s": 0.06185768399998892,
+            "token_ids": [
+              33
+            ],
+            "content": "B"
+          },
+          {
+            "elapsed_s": 0.0923471399999869,
+            "token_ids": [
+              151645
+            ],
+            "content": ""
+          },
+          {
+            "elapsed_s": 0.0923471399999869,
+            "token_ids": [],
+            "content": ""
+          }
+        ],
+        "status": "success",
+        "done": true,
+        "http_status": 200,
+        "usage": {
+          "prompt_tokens": 61,
+          "completion_tokens": 2,
+          "total_tokens": 63
+        },
+        "error": null,
+        "finish_reason": "stop",
+        "request_wall_s": 0.09239983599999846,
+        "token_ids": [
+          33,
+          151645
+        ],
+        "output_text": "B",
+        "content_event_count": 1,
+        "stream_token_count": 2,
+        "usage_completion_tokens": 2,
+        "token_count_matches_usage": true,
+        "ttft_ms": 61.85768399998892,
+        "ttfc_ms": 61.85768399998892,
+        "ttft_including_client_queue_ms": 61.85768399998892,
+        "single_token_events": true,
+        "inter_token_arrival_ms": [
+          30.489455999997972
+        ],
+        "tpot_ms": 30.489455999997972
+      },
+      "exact_match": false
+    },
+    {
+      "id": "lookup_3",
+      "category": "context_lookup",
+      "prompt": "Record: order_id=Q17, supplier=Delta, status=shipped. Return only the supplier value.",
+      "answer": "Delta",
+      "record": {
+        "id": "lookup_3",
+        "client_queue_ms": 0.0,
+        "body": {
+          "model": "Qwen/Qwen2.5-0.5B-Instruct",
+          "messages": [
+            {
+              "role": "user",
+              "content": "Record: order_id=Q17, supplier=Delta, status=shipped. Return only the supplier value."
+            }
+          ],
+          "max_tokens": 48,
+          "temperature": 0,
+          "seed": 42,
+          "stream": true,
+          "stream_options": {
+            "include_usage": true
+          },
+          "return_token_ids": true
+        },
+        "events": [
+          {
+            "elapsed_s": 0.001220058000001245,
+            "token_ids": [],
+            "content": ""
+          },
+          {
+            "elapsed_s": 0.06333348799998362,
+            "token_ids": [
+              20277
+            ],
+            "content": "Delta"
+          },
+          {
+            "elapsed_s": 0.08988724399998205,
+            "token_ids": [
+              151645
+            ],
+            "content": ""
+          },
+          {
+            "elapsed_s": 0.08988724399998205,
+            "token_ids": [],
+            "content": ""
+          }
+        ],
+        "status": "success",
+        "done": true,
+        "http_status": 200,
+        "usage": {
+          "prompt_tokens": 53,
+          "completion_tokens": 2,
+          "total_tokens": 55
+        },
+        "error": null,
+        "finish_reason": "stop",
+        "request_wall_s": 0.08994013999998174,
+        "token_ids": [
+          20277,
+          151645
+        ],
+        "output_text": "Delta",
+        "content_event_count": 1,
+        "stream_token_count": 2,
+        "usage_completion_tokens": 2,
+        "token_count_matches_usage": true,
+        "ttft_ms": 63.33348799998362,
+        "ttfc_ms": 63.33348799998362,
+        "ttft_including_client_queue_ms": 63.33348799998362,
+        "single_token_events": true,
+        "inter_token_arrival_ms": [
+          26.55375599999843
+        ],
+        "tpot_ms": 26.55375599999843
+      },
+      "exact_match": true
+    },
+    {
+      "id": "lookup_4",
+      "category": "context_lookup",
+      "prompt": "Record: sensor=R8, voltage=3.6, unit=V. Return only the sensor identifier.",
+      "answer": "R8",
+      "record": {
+        "id": "lookup_4",
+        "client_queue_ms": 0.0,
+        "body": {
+          "model": "Qwen/Qwen2.5-0.5B-Instruct",
+          "messages": [
+            {
+              "role": "user",
+              "content": "Record: sensor=R8, voltage=3.6, unit=V. Return only the sensor identifier."
+            }
+          ],
+          "max_tokens": 48,
+          "temperature": 0,
+          "seed": 42,
+          "stream": true,
+          "stream_options": {
+            "include_usage": true
+          },
+          "return_token_ids": true
+        },
+        "events": [
+          {
+            "elapsed_s": 0.0013625669999726142,
+            "token_ids": [],
+            "content": ""
+          },
+          {
+            "elapsed_s": 0.05948864899997375,
+            "token_ids": [
+              29511
+            ],
+            "content": "sensor"
+          },
+          {
+            "elapsed_s": 0.08954837399997473,
+            "token_ids": [
+              151645
+            ],
+            "content": ""
+          },
+          {
+            "elapsed_s": 0.08954837399997473,
+            "token_ids": [],
+            "content": ""
+          }
+        ],
+        "status": "success",
+        "done": true,
+        "http_status": 200,
+        "usage": {
+          "prompt_tokens": 51,
+          "completion_tokens": 2,
+          "total_tokens": 53
+        },
+        "error": null,
+        "finish_reason": "stop",
+        "request_wall_s": 0.08959605299997975,
+        "token_ids": [
+          29511,
+          151645
+        ],
+        "output_text": "sensor",
+        "content_event_count": 1,
+        "stream_token_count": 2,
+        "usage_completion_tokens": 2,
+        "token_count_matches_usage": true,
+        "ttft_ms": 59.48864899997375,
+        "ttfc_ms": 59.48864899997375,
+        "ttft_including_client_queue_ms": 59.48864899997375,
+        "single_token_events": true,
+        "inter_token_arrival_ms": [
+          30.05972500000098
+        ],
+        "tpot_ms": 30.05972500000098
+      },
+      "exact_match": false
+    },
+    {
+      "id": "rule_1",
+      "category": "threshold_rule",
+      "prompt": "Rule: if temperature > 40 return ALERT, otherwise return OK. Temperature is 42. Return only ALERT or OK.",
+      "answer": "ALERT",
+      "record": {
+        "id": "rule_1",
+        "client_queue_ms": 0.0,
+        "body": {
+          "model": "Qwen/Qwen2.5-0.5B-Instruct",
+          "messages": [
+            {
+              "role": "user",
+              "content": "Rule: if temperature > 40 return ALERT, otherwise return OK. Temperature is 42. Return only ALERT or OK."
+            }
+          ],
+          "max_tokens": 48,
+          "temperature": 0,
+          "seed": 42,
+          "stream": true,
+          "stream_options": {
+            "include_usage": true
+          },
+          "return_token_ids": true
+        },
+        "events": [
+          {
+            "elapsed_s": 0.0010678730000108771,
+            "token_ids": [],
+            "content": ""
+          },
+          {
+            "elapsed_s": 0.06887714900000219,
+            "token_ids": [
+              3925
+            ],
+            "content": "OK"
+          },
+          {
+            "elapsed_s": 0.09561062700001344,
+            "token_ids": [
+              151645
+            ],
+            "content": ""
+          },
+          {
+            "elapsed_s": 0.09561062700001344,
+            "token_ids": [],
+            "content": ""
+          }
+        ],
+        "status": "success",
+        "done": true,
+        "http_status": 200,
+        "usage": {
+          "prompt_tokens": 56,
+          "completion_tokens": 2,
+          "total_tokens": 58
+        },
+        "error": null,
+        "finish_reason": "stop",
+        "request_wall_s": 0.09566135700001155,
+        "token_ids": [
+          3925,
+          151645
+        ],
+        "output_text": "OK",
+        "content_event_count": 1,
+        "stream_token_count": 2,
+        "usage_completion_tokens": 2,
+        "token_count_matches_usage": true,
+        "ttft_ms": 68.87714900000219,
+        "ttfc_ms": 68.87714900000219,
+        "ttft_including_client_queue_ms": 68.87714900000219,
+        "single_token_events": true,
+        "inter_token_arrival_ms": [
+          26.733478000011246
+        ],
+        "tpot_ms": 26.733478000011246
+      },
+      "exact_match": false
+    },
+    {
+      "id": "rule_2",
+      "category": "threshold_rule",
+      "prompt": "Rule: if temperature > 40 return ALERT, otherwise return OK. Temperature is 40. Return only ALERT or OK.",
+      "answer": "OK",
+      "record": {
+        "id": "rule_2",
+        "client_queue_ms": 0.0,
+        "body": {
+          "model": "Qwen/Qwen2.5-0.5B-Instruct",
+          "messages": [
+            {
+              "role": "user",
+              "content": "Rule: if temperature > 40 return ALERT, otherwise return OK. Temperature is 40. Return only ALERT or OK."
+            }
+          ],
+          "max_tokens": 48,
+          "temperature": 0,
+          "seed": 42,
+          "stream": true,
+          "stream_options": {
+            "include_usage": true
+          },
+          "return_token_ids": true
+        },
+        "events": [
+          {
+            "elapsed_s": 0.0010327310000093348,
+            "token_ids": [],
+            "content": ""
+          },
+          {
+            "elapsed_s": 0.0632444400000054,
+            "token_ids": [
+              3925
+            ],
+            "content": "OK"
+          },
+          {
+            "elapsed_s": 0.09781433700001685,
+            "token_ids": [
+              151645
+            ],
+            "content": ""
+          },
+          {
+            "elapsed_s": 0.09781433700001685,
+            "token_ids": [],
+            "content": ""
+          }
+        ],
+        "status": "success",
+        "done": true,
+        "http_status": 200,
+        "usage": {
+          "prompt_tokens": 56,
+          "completion_tokens": 2,
+          "total_tokens": 58
+        },
+        "error": null,
+        "finish_reason": "stop",
+        "request_wall_s": 0.09786834500002328,
+        "token_ids": [
+          3925,
+          151645
+        ],
+        "output_text": "OK",
+        "content_event_count": 1,
+        "stream_token_count": 2,
+        "usage_completion_tokens": 2,
+        "token_count_matches_usage": true,
+        "ttft_ms": 63.2444400000054,
+        "ttfc_ms": 63.2444400000054,
+        "ttft_including_client_queue_ms": 63.2444400000054,
+        "single_token_events": true,
+        "inter_token_arrival_ms": [
+          34.56989700001145
+        ],
+        "tpot_ms": 34.56989700001145
+      },
+      "exact_match": true
+    },
+    {
+      "id": "rule_3",
+      "category": "threshold_rule",
+      "prompt": "Rule: a part passes if length is at least 10 and at most 12. Length is 11. Return only PASS or FAIL.",
+      "answer": "PASS",
+      "record": {
+        "id": "rule_3",
+        "client_queue_ms": 0.0,
+        "body": {
+          "model": "Qwen/Qwen2.5-0.5B-Instruct",
+          "messages": [
+            {
+              "role": "user",
+              "content": "Rule: a part passes if length is at least 10 and at most 12. Length is 11. Return only PASS or FAIL."
+            }
+          ],
+          "max_tokens": 48,
+          "temperature": 0,
+          "seed": 42,
+          "stream": true,
+          "stream_options": {
+            "include_usage": true
+          },
+          "return_token_ids": true
+        },
+        "events": [
+          {
+            "elapsed_s": 0.0014457549999917774,
+            "token_ids": [],
+            "content": ""
+          },
+          {
+            "elapsed_s": 0.05993438999999512,
+            "token_ids": [
+              36973
+            ],
+            "content": "FAIL"
+          },
+          {
+            "elapsed_s": 0.10015807499999596,
+            "token_ids": [
+              151645
+            ],
+            "content": ""
+          },
+          {
+            "elapsed_s": 0.10027199699999301,
+            "token_ids": [],
+            "content": ""
+          }
+        ],
+        "status": "success",
+        "done": true,
+        "http_status": 200,
+        "usage": {
+          "prompt_tokens": 61,
+          "completion_tokens": 2,
+          "total_tokens": 63
+        },
+        "error": null,
+        "finish_reason": "stop",
+        "request_wall_s": 0.10030865099997754,
+        "token_ids": [
+          36973,
+          151645
+        ],
+        "output_text": "FAIL",
+        "content_event_count": 1,
+        "stream_token_count": 2,
+        "usage_completion_tokens": 2,
+        "token_count_matches_usage": true,
+        "ttft_ms": 59.93438999999512,
+        "ttfc_ms": 59.93438999999512,
+        "ttft_including_client_queue_ms": 59.93438999999512,
+        "single_token_events": true,
+        "inter_token_arrival_ms": [
+          40.22368500000084
+        ],
+        "tpot_ms": 40.22368500000084
+      },
+      "exact_match": false
+    },
+    {
+      "id": "rule_4",
+      "category": "threshold_rule",
+      "prompt": "Rule: a part passes if length is at least 10 and at most 12. Length is 13. Return only PASS or FAIL.",
+      "answer": "FAIL",
+      "record": {
+        "id": "rule_4",
+        "client_queue_ms": 0.0,
+        "body": {
+          "model": "Qwen/Qwen2.5-0.5B-Instruct",
+          "messages": [
+            {
+              "role": "user",
+              "content": "Rule: a part passes if length is at least 10 and at most 12. Length is 13. Return only PASS or FAIL."
+            }
+          ],
+          "max_tokens": 48,
+          "temperature": 0,
+          "seed": 42,
+          "stream": true,
+          "stream_options": {
+            "include_usage": true
+          },
+          "return_token_ids": true
+        },
+        "events": [
+          {
+            "elapsed_s": 0.0014209619999974166,
+            "token_ids": [],
+            "content": ""
+          },
+          {
+            "elapsed_s": 0.057810708000005206,
+            "token_ids": [
+              36973
+            ],
+            "content": "FAIL"
+          },
+          {
+            "elapsed_s": 0.10909184100000857,
+            "token_ids": [
+              151645
+            ],
+            "content": ""
+          },
+          {
+            "elapsed_s": 0.10909184100000857,
+            "token_ids": [],
+            "content": ""
+          }
+        ],
+        "status": "success",
+        "done": true,
+        "http_status": 200,
+        "usage": {
+          "prompt_tokens": 61,
+          "completion_tokens": 2,
+          "total_tokens": 63
+        },
+        "error": null,
+        "finish_reason": "stop",
+        "request_wall_s": 0.1092046790000154,
+        "token_ids": [
+          36973,
+          151645
+        ],
+        "output_text": "FAIL",
+        "content_event_count": 1,
+        "stream_token_count": 2,
+        "usage_completion_tokens": 2,
+        "token_count_matches_usage": true,
+        "ttft_ms": 57.81070800000521,
+        "ttfc_ms": 57.81070800000521,
+        "ttft_including_client_queue_ms": 57.81070800000521,
+        "single_token_events": true,
+        "inter_token_arrival_ms": [
+          51.281133000003365
+        ],
+        "tpot_ms": 51.281133000003365
+      },
+      "exact_match": true
+    },
+    {
+      "id": "logic_1",
+      "category": "sorting",
+      "prompt": "Return only the smallest number in this list: 7, 3, 9, 5.",
+      "answer": "3",
+      "record": {
+        "id": "logic_1",
+        "client_queue_ms": 0.0,
+        "body": {
+          "model": "Qwen/Qwen2.5-0.5B-Instruct",
+          "messages": [
+            {
+              "role": "user",
+              "content": "Return only the smallest number in this list: 7, 3, 9, 5."
+            }
+          ],
+          "max_tokens": 48,
+          "temperature": 0,
+          "seed": 42,
+          "stream": true,
+          "stream_options": {
+            "include_usage": true
+          },
+          "return_token_ids": true
+        },
+        "events": [
+          {
+            "elapsed_s": 0.0011409090000142896,
+            "token_ids": [],
+            "content": ""
+          },
+          {
+            "elapsed_s": 0.05643404700001042,
+            "token_ids": [
+              785
+            ],
+            "content": "The"
+          },
+          {
+            "elapsed_s": 0.08901811000001203,
+            "token_ids": [
+              24632
+            ],
+            "content": " smallest"
+          },
+          {
+            "elapsed_s": 0.11717675799999938,
+            "token_ids": [
+              1372
+            ],
+            "content": " number"
+          },
+          {
+            "elapsed_s": 0.1430308230000037,
+            "token_ids": [
+              304
+            ],
+            "content": " in"
+          },
+          {
+            "elapsed_s": 0.20808086299999218,
+            "token_ids": [
+              279
+            ],
+            "content": " the"
+          },
+          {
+            "elapsed_s": 0.24128383699999745,
+            "token_ids": [
+              1140
+            ],
+            "content": " list"
+          },
+          {
+            "elapsed_s": 0.2801858280000147,
+            "token_ids": [
+              220
+            ],
+            "content": " "
+          },
+          {
+            "elapsed_s": 0.30619216600001664,
+            "token_ids": [
+              22
+            ],
+            "content": "7"
+          },
+          {
+            "elapsed_s": 0.3486681239999996,
+            "token_ids": [
+              11
+            ],
+            "content": ","
+          },
+          {
+            "elapsed_s": 0.39212818800001514,
+            "token_ids": [
+              220
+            ],
+            "content": " "
+          },
+          {
+            "elapsed_s": 0.45642159999999876,
+            "token_ids": [
+              18
+            ],
+            "content": "3"
+          },
+          {
+            "elapsed_s": 0.483190239999999,
+            "token_ids": [
+              11
+            ],
+            "content": ","
+          },
+          {
+            "elapsed_s": 0.5451017990000082,
+            "token_ids": [
+              220
+            ],
+            "content": " "
+          },
+          {
+            "elapsed_s": 0.5703932760000043,
+            "token_ids": [
+              24
+            ],
+            "content": "9"
+          },
+          {
+            "elapsed_s": 0.5969002470000078,
+            "token_ids": [
+              11
+            ],
+            "content": ","
+          },
+          {
+            "elapsed_s": 0.625997658000017,
+            "token_ids": [
+              220
+            ],
+            "content": " "
+          },
+          {
+            "elapsed_s": 0.6658709490000092,
+            "token_ids": [
+              20
+            ],
+            "content": "5"
+          },
+          {
+            "elapsed_s": 0.6938430430000153,
+            "token_ids": [
+              374
+            ],
+            "content": " is"
+          },
+          {
+            "elapsed_s": 0.7279848550000168,
+            "token_ids": [
+              220
+            ],
+            "content": " "
+          },
+          {
+            "elapsed_s": 0.7567514719999906,
+            "token_ids": [
+              18
+            ],
+            "content": "3"
+          },
+          {
+            "elapsed_s": 0.7874433650000014,
+            "token_ids": [
+              13
+            ],
+            "content": "."
+          },
+          {
+            "elapsed_s": 0.8229139690000125,
+            "token_ids": [
+              151645
+            ],
+            "content": ""
+          },
+          {
+            "elapsed_s": 0.8229139690000125,
+            "token_ids": [],
+            "content": ""
+          }
+        ],
+        "status": "success",
+        "done": true,
+        "http_status": 200,
+        "usage": {
+          "prompt_tokens": 50,
+          "completion_tokens": 22,
+          "total_tokens": 72
+        },
+        "error": null,
+        "finish_reason": "stop",
+        "request_wall_s": 0.8230343550000043,
+        "token_ids": [
+          785,
+          24632,
+          1372,
+          304,
+          279,
+          1140,
+          220,
+          22,
+          11,
+          220,
+          18,
+          11,
+          220,
+          24,
+          11,
+          220,
+          20,
+          374,
+          220,
+          18,
+          13,
+          151645
+        ],
+        "output_text": "The smallest number in the list 7, 3, 9, 5 is 3.",
+        "content_event_count": 21,
+        "stream_token_count": 22,
+        "usage_completion_tokens": 22,
+        "token_count_matches_usage": true,
+        "ttft_ms": 56.43404700001042,
+        "ttfc_ms": 56.43404700001042,
+        "ttft_including_client_queue_ms": 56.43404700001042,
+        "single_token_events": true,
+        "inter_token_arrival_ms": [
+          32.584063000001606,
+          28.158647999987352,
+          25.85406500000431,
+          65.05003999998848,
+          33.20297400000527,
+          38.90199100001723,
+          26.00633800000196,
+          42.47595799998294,
+          43.460064000015564,
+          64.29341199998362,
+          26.768640000000232,
+          61.91155900000922,
+          25.29147699999612,
+          26.506971000003432,
+          29.097411000009288,
+          39.87329099999215,
+          27.97209400000611,
+          34.14181200000144,
+          28.76661699997385,
+          30.69189300001085,
+          35.47060400001101
+        ],
+        "tpot_ms": 36.499043904762004
+      },
+      "exact_match": false
+    },
+    {
+      "id": "logic_2",
+      "category": "sorting",
+      "prompt": "Return only the largest number in this list: 18, 42, 27, 31.",
+      "answer": "42",
+      "record": {
+        "id": "logic_2",
+        "client_queue_ms": 0.0,
+        "body": {
+          "model": "Qwen/Qwen2.5-0.5B-Instruct",
+          "messages": [
+            {
+              "role": "user",
+              "content": "Return only the largest number in this list: 18, 42, 27, 31."
+            }
+          ],
+          "max_tokens": 48,
+          "temperature": 0,
+          "seed": 42,
+          "stream": true,
+          "stream_options": {
+            "include_usage": true
+          },
+          "return_token_ids": true
+        },
+        "events": [
+          {
+            "elapsed_s": 0.001010078999996722,
+            "token_ids": [],
+            "content": ""
+          },
+          {
+            "elapsed_s": 0.05552066100000275,
+            "token_ids": [
+              785
+            ],
+            "content": "The"
+          },
+          {
+            "elapsed_s": 0.08456001700000115,
+            "token_ids": [
+              7772
+            ],
+            "content": " largest"
+          },
+          {
+            "elapsed_s": 0.12808720500001414,
+            "token_ids": [
+              1372
+            ],
+            "content": " number"
+          },
+          {
+            "elapsed_s": 0.15743982099999698,
+            "token_ids": [
+              304
+            ],
+            "content": " in"
+          },
+          {
+            "elapsed_s": 0.1997721120000051,
+            "token_ids": [
+              279
+            ],
+            "content": " the"
+          },
+          {
+            "elapsed_s": 0.23320280699999785,
+            "token_ids": [
+              1140
+            ],
+            "content": " list"
+          },
+          {
+            "elapsed_s": 0.2594952150000154,
+            "token_ids": [
+              220
+            ],
+            "content": " "
+          },
+          {
+            "elapsed_s": 0.2833770510000022,
+            "token_ids": [
+              16
+            ],
+            "content": "1"
+          },
+          {
+            "elapsed_s": 0.32248936600001343,
+            "token_ids": [
+              23
+            ],
+            "content": "8"
+          },
+          {
+            "elapsed_s": 0.34751244800000336,
+            "token_ids": [
+              11
+            ],
+            "content": ","
+          },
+          {
+            "elapsed_s": 0.37288237000001345,
+            "token_ids": [
+              220
+            ],
+            "content": " "
+          },
+          {
+            "elapsed_s": 0.41718765800001734,
+            "token_ids": [
+              19
+            ],
+            "content": "4"
+          },
+          {
+            "elapsed_s": 0.4505527630000188,
+            "token_ids": [
+              17
+            ],
+            "content": "2"
+          },
+          {
+            "elapsed_s": 0.47823533300001486,
+            "token_ids": [
+              11
+            ],
+            "content": ","
+          },
+          {
+            "elapsed_s": 0.5193869580000126,
+            "token_ids": [
+              220
+            ],
+            "content": " "
+          },
+          {
+            "elapsed_s": 0.5466369920000034,
+            "token_ids": [
+              17
+            ],
+            "content": "2"
+          },
+          {
+            "elapsed_s": 0.620652849999999,
+            "token_ids": [
+              22
+            ],
+            "content": "7"
+          },
+          {
+            "elapsed_s": 0.650163799000012,
+            "token_ids": [
+              11
+            ],
+            "content": ","
+          },
+          {
+            "elapsed_s": 0.7012979179999945,
+            "token_ids": [
+              220
+            ],
+            "content": " "
+          },
+          {
+            "elapsed_s": 0.7314370770000096,
+            "token_ids": [
+              18
+            ],
+            "content": "3"
+          },
+          {
+            "elapsed_s": 0.7612038070000153,
+            "token_ids": [
+              16
+            ],
+            "content": "1"
+          },
+          {
+            "elapsed_s": 0.7862099600000079,
+            "token_ids": [
+              374
+            ],
+            "content": " is"
+          },
+          {
+            "elapsed_s": 0.8261007490000054,
+            "token_ids": [
+              220
+            ],
+            "content": " "
+          },
+          {
+            "elapsed_s": 0.8563192999999956,
+            "token_ids": [
+              19
+            ],
+            "content": "4"
+          },
+          {
+            "elapsed_s": 0.8913970600000027,
+            "token_ids": [
+              17
+            ],
+            "content": "2"
+          },
+          {
+            "elapsed_s": 0.9321406410000179,
+            "token_ids": [
+              13
+            ],
+            "content": "."
+          },
+          {
+            "elapsed_s": 0.9783702250000204,
+            "token_ids": [
+              151645
+            ],
+            "content": ""
+          },
+          {
+            "elapsed_s": 0.9783702250000204,
+            "token_ids": [],
+            "content": ""
+          }
+        ],
+        "status": "success",
+        "done": true,
+        "http_status": 200,
+        "usage": {
+          "prompt_tokens": 54,
+          "completion_tokens": 27,
+          "total_tokens": 81
+        },
+        "error": null,
+        "finish_reason": "stop",
+        "request_wall_s": 0.9784196589999965,
+        "token_ids": [
+          785,
+          7772,
+          1372,
+          304,
+          279,
+          1140,
+          220,
+          16,
+          23,
+          11,
+          220,
+          19,
+          17,
+          11,
+          220,
+          17,
+          22,
+          11,
+          220,
+          18,
+          16,
+          374,
+          220,
+          19,
+          17,
+          13,
+          151645
+        ],
+        "output_text": "The largest number in the list 18, 42, 27, 31 is 42.",
+        "content_event_count": 26,
+        "stream_token_count": 27,
+        "usage_completion_tokens": 27,
+        "token_count_matches_usage": true,
+        "ttft_ms": 55.52066100000275,
+        "ttfc_ms": 55.52066100000275,
+        "ttft_including_client_queue_ms": 55.52066100000275,
+        "single_token_events": true,
+        "inter_token_arrival_ms": [
+          29.039355999998406,
+          43.527188000012984,
+          29.352615999982845,
+          42.33229100000813,
+          33.43069499999274,
+          26.29240800001753,
+          23.881835999986833,
+          39.11231500001122,
+          25.023081999989927,
+          25.369922000010092,
+          44.305288000003884,
+          33.36510500000145,
+          27.682569999996076,
+          41.15162499999769,
+          27.25003399999082,
+          74.01585799999566,
+          29.510949000012943,
+          51.13411899998255,
+          30.13915900001507,
+          29.766730000005737,
+          25.006152999992537,
+          39.89078899999754,
+          30.218550999990157,
+          35.077760000007174,
+          40.74358100001518,
+          46.22958400000243
+        ],
+        "tpot_ms": 35.494214000000675
+      },
+      "exact_match": false
+    },
+    {
+      "id": "logic_3",
+      "category": "counting",
+      "prompt": "How many numbers in this list are greater than 5: 2, 8, 4, 9? Return only the count.",
+      "answer": "2",
+      "record": {
+        "id": "logic_3",
+        "client_queue_ms": 0.0,
+        "body": {
+          "model": "Qwen/Qwen2.5-0.5B-Instruct",
+          "messages": [
+            {
+              "role": "user",
+              "content": "How many numbers in this list are greater than 5: 2, 8, 4, 9? Return only the count."
+            }
+          ],
+          "max_tokens": 48,
+          "temperature": 0,
+          "seed": 42,
+          "stream": true,
+          "stream_options": {
+            "include_usage": true
+          },
+          "return_token_ids": true
+        },
+        "events": [
+          {
+            "elapsed_s": 0.0029318849999810936,
+            "token_ids": [],
+            "content": ""
+          },
+          {
+            "elapsed_s": 0.05854866299998207,
+            "token_ids": [
+              3862
+            ],
+            "content": "There"
+          },
+          {
+            "elapsed_s": 0.09043955199999232,
+            "token_ids": [
+              374
+            ],
+            "content": " is"
+          },
+          {
+            "elapsed_s": 0.11628162399998132,
+            "token_ids": [
+              1172
+            ],
+            "content": " only"
+          },
+          {
+            "elapsed_s": 0.14455284799998935,
+            "token_ids": [
+              825
+            ],
+            "content": " one"
+          },
+          {
+            "elapsed_s": 0.17501036999999542,
+            "token_ids": [
+              1372
+            ],
+            "content": " number"
+          },
+          {
+            "elapsed_s": 0.2426098990000014,
+            "token_ids": [
+              304
+            ],
+            "content": " in"
+          },
+          {
+            "elapsed_s": 0.2703260099999909,
+            "token_ids": [
+              279
+            ],
+            "content": " the"
+          },
+          {
+            "elapsed_s": 0.29585301999998137,
+            "token_ids": [
+              1140
+            ],
+            "content": " list"
+          },
+          {
+            "elapsed_s": 0.32884858299999564,
+            "token_ids": [
+              429
+            ],
+            "content": " that"
+          },
+          {
+            "elapsed_s": 0.3573536739999952,
+            "token_ids": [
+              374
+            ],
+            "content": " is"
+          },
+          {
+            "elapsed_s": 0.3846038269999781,
+            "token_ids": [
+              7046
+            ],
+            "content": " greater"
+          },
+          {
+            "elapsed_s": 0.434927837999993,
+            "token_ids": [
+              1091
+            ],
+            "content": " than"
+          },
+          {
+            "elapsed_s": 0.47556233899999256,
+            "token_ids": [
+              220
+            ],
+            "content": " "
+          },
+          {
+            "elapsed_s": 0.5159930599999996,
+            "token_ids": [
+              20
+            ],
+            "content": "5"
+          },
+          {
+            "elapsed_s": 0.5438500610000006,
+            "token_ids": [
+              11
+            ],
+            "content": ","
+          },
+          {
+            "elapsed_s": 0.5698373729999844,
+            "token_ids": [
+              892
+            ],
+            "content": " which"
+          },
+          {
+            "elapsed_s": 0.5995410779999872,
+            "token_ids": [
+              374
+            ],
+            "content": " is"
+          },
+          {
+            "elapsed_s": 0.651512887999985,
+            "token_ids": [
+              220
+            ],
+            "content": " "
+          },
+          {
+            "elapsed_s": 0.6961417879999772,
+            "token_ids": [
+              24
+            ],
+            "content": "9"
+          },
+          {
+            "elapsed_s": 0.7345395950000011,
+            "token_ids": [
+              13
+            ],
+            "content": "."
+          },
+          {
+            "elapsed_s": 0.762798048999997,
+            "token_ids": [
+              15277
+            ],
+            "content": " Therefore"
+          },
+          {
+            "elapsed_s": 0.8158157589999746,
+            "token_ids": [
+              11
+            ],
+            "content": ","
+          },
+          {
+            "elapsed_s": 0.8443539349999867,
+            "token_ids": [
+              279
+            ],
+            "content": " the"
+          },
+          {
+            "elapsed_s": 0.8718107830000008,
+            "token_ids": [
+              1760
+            ],
+            "content": " count"
+          },
+          {
+            "elapsed_s": 0.9055578999999909,
+            "token_ids": [
+              374
+            ],
+            "content": " is"
+          },
+          {
+            "elapsed_s": 0.9418896779999955,
+            "token_ids": [
+              220
+            ],
+            "content": " "
+          },
+          {
+            "elapsed_s": 0.9823818219999794,
+            "token_ids": [
+              16
+            ],
+            "content": "1"
+          },
+          {
+            "elapsed_s": 1.0264392959999782,
+            "token_ids": [
+              13
+            ],
+            "content": "."
+          },
+          {
+            "elapsed_s": 1.0607202469999777,
+            "token_ids": [
+              151645
+            ],
+            "content": ""
+          },
+          {
+            "elapsed_s": 1.0607202469999777,
+            "token_ids": [],
+            "content": ""
+          }
+        ],
+        "status": "success",
+        "done": true,
+        "http_status": 200,
+        "usage": {
+          "prompt_tokens": 58,
+          "completion_tokens": 29,
+          "total_tokens": 87
+        },
+        "error": null,
+        "finish_reason": "stop",
+        "request_wall_s": 1.0608066739999913,
+        "token_ids": [
+          3862,
+          374,
+          1172,
+          825,
+          1372,
+          304,
+          279,
+          1140,
+          429,
+          374,
+          7046,
+          1091,
+          220,
+          20,
+          11,
+          892,
+          374,
+          220,
+          24,
+          13,
+          15277,
+          11,
+          279,
+          1760,
+          374,
+          220,
+          16,
+          13,
+          151645
+        ],
+        "output_text": "There is only one number in the list that is greater than 5, which is 9. Therefore, the count is 1.",
+        "content_event_count": 28,
+        "stream_token_count": 29,
+        "usage_completion_tokens": 29,
+        "token_count_matches_usage": true,
+        "ttft_ms": 58.54866299998207,
+        "ttfc_ms": 58.54866299998207,
+        "ttft_including_client_queue_ms": 58.54866299998207,
+        "single_token_events": true,
+        "inter_token_arrival_ms": [
+          31.890889000010247,
+          25.842071999989003,
+          28.271224000008033,
+          30.457522000006065,
+          67.59952900000599,
+          27.716110999989496,
+          25.52700999999047,
+          32.99556300001427,
+          28.50509099999954,
+          27.2501529999829,
+          50.324011000014934,
+          40.634500999999545,
+          40.430721000007,
+          27.85700100000099,
+          25.98731199998383,
+          29.703705000002856,
+          51.97180999999773,
+          44.6288999999922,
+          38.39780700002393,
+          28.258453999995936,
+          53.01770999997757,
+          28.538176000012072,
+          27.456848000014134,
+          33.74711699999011,
+          36.33177800000453,
+          40.49214399998391,
+          44.05747399999882,
+          34.280950999999504
+        ],
+        "tpot_ms": 35.79184228571413
+      },
+      "exact_match": false
+    },
+    {
+      "id": "logic_4",
+      "category": "counting",
+      "prompt": "There are 3 red, 4 blue, and 2 green containers. Return only the number of blue containers.",
+      "answer": "4",
+      "record": {
+        "id": "logic_4",
+        "client_queue_ms": 0.0,
+        "body": {
+          "model": "Qwen/Qwen2.5-0.5B-Instruct",
+          "messages": [
+            {
+              "role": "user",
+              "content": "There are 3 red, 4 blue, and 2 green containers. Return only the number of blue containers."
+            }
+          ],
+          "max_tokens": 48,
+          "temperature": 0,
+          "seed": 42,
+          "stream": true,
+          "stream_options": {
+            "include_usage": true
+          },
+          "return_token_ids": true
+        },
+        "events": [
+          {
+            "elapsed_s": 0.0016418599999781236,
+            "token_ids": [],
+            "content": ""
+          },
+          {
+            "elapsed_s": 0.054911827999973184,
+            "token_ids": [
+              1249
+            ],
+            "content": "To"
+          },
+          {
+            "elapsed_s": 0.08439756199999238,
+            "token_ids": [
+              8253
+            ],
+            "content": " determine"
+          },
+          {
+            "elapsed_s": 0.12411915099997373,
+            "token_ids": [
+              279
+            ],
+            "content": " the"
+          },
+          {
+            "elapsed_s": 0.1523667719999935,
+            "token_ids": [
+              1372
+            ],
+            "content": " number"
+          },
+          {
+            "elapsed_s": 0.18442677299998422,
+            "token_ids": [
+              315
+            ],
+            "content": " of"
+          },
+          {
+            "elapsed_s": 0.21018611799999576,
+            "token_ids": [
+              6303
+            ],
+            "content": " blue"
+          },
+          {
+            "elapsed_s": 0.23603327699999,
+            "token_ids": [
+              23853
+            ],
+            "content": " containers"
+          },
+          {
+            "elapsed_s": 0.2624498569999787,
+            "token_ids": [
+              11
+            ],
+            "content": ","
+          },
+          {
+            "elapsed_s": 0.2960080559999767,
+            "token_ids": [
+              582
+            ],
+            "content": " we"
+          },
+          {
+            "elapsed_s": 0.3239460829999814,
+            "token_ids": [
+              1184
+            ],
+            "content": " need"
+          },
+          {
+            "elapsed_s": 0.3795716469999775,
+            "token_ids": [
+              311
+            ],
+            "content": " to"
+          },
+          {
+            "elapsed_s": 0.4155261209999992,
+            "token_ids": [
+              2908
+            ],
+            "content": " consider"
+          },
+          {
+            "elapsed_s": 0.46642707399999495,
+            "token_ids": [
+              279
+            ],
+            "content": " the"
+          },
+          {
+            "elapsed_s": 0.5201761629999737,
+            "token_ids": [
+              2790
+            ],
+            "content": " total"
+          },
+          {
+            "elapsed_s": 0.578265182999985,
+            "token_ids": [
+              1372
+            ],
+            "content": " number"
+          },
+          {
+            "elapsed_s": 0.621721545999975,
+            "token_ids": [
+              315
+            ],
+            "content": " of"
+          },
+          {
+            "elapsed_s": 0.6770104309999851,
+            "token_ids": [
+              23853
+            ],
+            "content": " containers"
+          },
+          {
+            "elapsed_s": 0.7265509979999933,
+            "token_ids": [
+              323
+            ],
+            "content": " and"
+          },
+          {
+            "elapsed_s": 0.774904504999995,
+            "token_ids": [
+              279
+            ],
+            "content": " the"
+          },
+          {
+            "elapsed_s": 0.810890650999994,
+            "token_ids": [
+              1372
+            ],
+            "content": " number"
+          },
+          {
+            "elapsed_s": 0.856844308999996,
+            "token_ids": [
+              315
+            ],
+            "content": " of"
+          },
+          {
+            "elapsed_s": 0.888073721999973,
+            "token_ids": [
+              23853
+            ],
+            "content": " containers"
+          },
+          {
+            "elapsed_s": 0.9235318939999786,
+            "token_ids": [
+              315
+            ],
+            "content": " of"
+          },
+          {
+            "elapsed_s": 0.9520588729999986,
+            "token_ids": [
+              1817
+            ],
+            "content": " each"
+          },
+          {
+            "elapsed_s": 0.9854534299999784,
+            "token_ids": [
+              1894
+            ],
+            "content": " color"
+          },
+          {
+            "elapsed_s": 1.016825171999983,
+            "token_ids": [
+              13
+            ],
+            "content": "."
+          },
+          {
+            "elapsed_s": 1.0496349829999758,
+            "token_ids": [
+              5692
+            ],
+            "content": " Here"
+          },
+          {
+            "elapsed_s": 1.0806353689999924,
+            "token_ids": [
+              594
+            ],
+            "content": "'s"
+          },
+          {
+            "elapsed_s": 1.1199651879999806,
+            "token_ids": [
+              279
+            ],
+            "content": " the"
+          },
+          {
+            "elapsed_s": 1.1584765659999903,
+            "token_ids": [
+              3019
+            ],
+            "content": " step"
+          },
+          {
+            "elapsed_s": 1.1911685369999816,
+            "token_ids": [
+              14319
+            ],
+            "content": "-by"
+          },
+          {
+            "elapsed_s": 1.2328836239999816,
+            "token_ids": [
+              29208
+            ],
+            "content": "-step"
+          },
+          {
+            "elapsed_s": 1.269821792999977,
+            "token_ids": [
+              32711
+            ],
+            "content": " reasoning"
+          },
+          {
+            "elapsed_s": 1.3160489229999826,
+            "token_ids": [
+              1447
+            ],
+            "content": ":\n\n"
+          },
+          {
+            "elapsed_s": 1.365081674999999,
+            "token_ids": [
+              16
+            ],
+            "content": "1"
+          },
+          {
+            "elapsed_s": 1.3933059829999763,
+            "token_ids": [
+              13
+            ],
+            "content": "."
+          },
+          {
+            "elapsed_s": 1.429389814999979,
+            "token_ids": [
+              64547
+            ],
+            "content": " Identify"
+          },
+          {
+            "elapsed_s": 1.459256953999983,
+            "token_ids": [
+              279
+            ],
+            "content": " the"
+          },
+          {
+            "elapsed_s": 1.5085095569999964,
+            "token_ids": [
+              2790
+            ],
+            "content": " total"
+          },
+          {
+            "elapsed_s": 1.5363743319999799,
+            "token_ids": [
+              1372
+            ],
+            "content": " number"
+          },
+          {
+            "elapsed_s": 1.567827861999973,
+            "token_ids": [
+              315
+            ],
+            "content": " of"
+          },
+          {
+            "elapsed_s": 1.6158588649999786,
+            "token_ids": [
+              23853
+            ],
+            "content": " containers"
+          },
+          {
+            "elapsed_s": 1.65540043499999,
+            "token_ids": [
+              510
+            ],
+            "content": ":\n"
+          },
+          {
+            "elapsed_s": 1.6927284539999903,
+            "token_ids": [
+              256
+            ],
+            "content": "  "
+          },
+          {
+            "elapsed_s": 1.739172597999982,
+            "token_ids": [
+              481
+            ],
+            "content": " -"
+          },
+          {
+            "elapsed_s": 1.7651475289999894,
+            "token_ids": [
+              3731
+            ],
+            "content": " Red"
+          },
+          {
+            "elapsed_s": 1.7968616629999872,
+            "token_ids": [
+              23853
+            ],
+            "content": " containers"
+          },
+          {
+            "elapsed_s": 1.8250348009999868,
+            "token_ids": [
+              25
+            ],
+            "content": ":"
+          },
+          {
+            "elapsed_s": 1.8252581200000009,
+            "token_ids": [],
+            "content": ""
+          }
+        ],
+        "status": "success",
+        "done": true,
+        "http_status": 200,
+        "usage": {
+          "prompt_tokens": 53,
+          "completion_tokens": 48,
+          "total_tokens": 101
+        },
+        "error": null,
+        "finish_reason": "length",
+        "request_wall_s": 1.8252910269999916,
+        "token_ids": [
+          1249,
+          8253,
+          279,
+          1372,
+          315,
+          6303,
+          23853,
+          11,
+          582,
+          1184,
+          311,
+          2908,
+          279,
+          2790,
+          1372,
+          315,
+          23853,
+          323,
+          279,
+          1372,
+          315,
+          23853,
+          315,
+          1817,
+          1894,
+          13,
+          5692,
+          594,
+          279,
+          3019,
+          14319,
+          29208,
+          32711,
+          1447,
+          16,
+          13,
+          64547,
+          279,
+          2790,
+          1372,
+          315,
+          23853,
+          510,
+          256,
+          481,
+          3731,
+          23853,
+          25
+        ],
+        "output_text": "To determine the number of blue containers, we need to consider the total number of containers and the number of containers of each color. Here's the step-by-step reasoning:\n\n1. Identify the total number of containers:\n   - Red containers:",
+        "content_event_count": 48,
+        "stream_token_count": 48,
+        "usage_completion_tokens": 48,
+        "token_count_matches_usage": true,
+        "ttft_ms": 54.911827999973184,
+        "ttfc_ms": 54.911827999973184,
+        "ttft_including_client_queue_ms": 54.911827999973184,
+        "single_token_events": true,
+        "inter_token_arrival_ms": [
+          29.485734000019193,
+          39.72158899998135,
+          28.247621000019763,
+          32.060000999990734,
+          25.759345000011535,
+          25.847158999994235,
+          26.4165799999887,
+          33.55819899999801,
+          27.938027000004695,
+          55.625563999996075,
+          35.95447400002172,
+          50.90095299999575,
+          53.74908899997877,
+          58.08902000001126,
+          43.456362999990006,
+          55.28888500001017,
+          49.540567000008195,
+          48.35350700000163,
+          35.98614599999905,
+          45.95365800000195,
+          31.229412999977058,
+          35.45817200000556,
+          28.526979000019992,
+          33.39455699997984,
+          31.371742000004588,
+          32.809810999992806,
+          31.000386000016533,
+          39.32981899998822,
+          38.5113780000097,
+          32.69197099999133,
+          41.71508700000004,
+          36.93816899999547,
+          46.227130000005445,
+          49.032752000016444,
+          28.224307999977327,
+          36.08383200000276,
+          29.867139000003817,
+          49.25260300001355,
+          27.86477499998341,
+          31.45352999999318,
+          48.03100300000551,
+          39.54157000001146,
+          37.32801900000027,
+          46.44414399999164,
+          25.974931000007473,
+          31.714133999997784,
+          28.173137999999653
+        ],
+        "tpot_ms": 37.662190914893905
+      },
+      "exact_match": false
+    }
+  ],
+  "successes": 16,
+  "exact_matches": 3,
+  "total": 16
+}

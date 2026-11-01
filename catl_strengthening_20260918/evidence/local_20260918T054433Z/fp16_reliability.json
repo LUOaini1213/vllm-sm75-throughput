@@ -1,0 +1,648 @@
+{
+  "kind": "real_service_fault_probes",
+  "cases": [
+    {
+      "case": "unknown_model",
+      "expected": "http_error",
+      "record": {
+        "id": "unknown_model",
+        "client_queue_ms": 0.0,
+        "body": {
+          "model": "definitely-not-a-model",
+          "messages": [
+            {
+              "role": "user",
+              "content": "Hello"
+            }
+          ],
+          "max_tokens": 32,
+          "temperature": 0,
+          "seed": 42,
+          "stream": true,
+          "stream_options": {
+            "include_usage": true
+          },
+          "return_token_ids": true
+        },
+        "events": [],
+        "status": "http_error",
+        "done": false,
+        "http_status": 404,
+        "usage": null,
+        "error": "{\"error\": {\"message\": \"Model not found\", \"type\": \"invalid_request_error\"}}",
+        "request_wall_s": 0.0010775659999922027,
+        "token_ids": [],
+        "output_text": "",
+        "content_event_count": 0,
+        "stream_token_count": 0,
+        "usage_completion_tokens": null,
+        "token_count_matches_usage": false,
+        "ttft_ms": null,
+        "ttfc_ms": null,
+        "ttft_including_client_queue_ms": null,
+        "single_token_events": false,
+        "inter_token_arrival_ms": [],
+        "tpot_ms": null
+      },
+      "recovery": {
+        "id": "unknown_model-recovery",
+        "client_queue_ms": 0.0,
+        "body": {
+          "model": "Qwen/Qwen2.5-0.5B-Instruct",
+          "messages": [
+            {
+              "role": "user",
+              "content": "Reply with OK only."
+            }
+          ],
+          "max_tokens": 8,
+          "temperature": 0,
+          "seed": 42,
+          "stream": true,
+          "stream_options": {
+            "include_usage": true
+          },
+          "return_token_ids": true
+        },
+        "events": [
+          {
+            "elapsed_s": 0.0012961129999951027,
+            "token_ids": [],
+            "content": ""
+          },
+          {
+            "elapsed_s": 0.19943649399999686,
+            "token_ids": [
+              3925
+            ],
+            "content": "OK"
+          },
+          {
+            "elapsed_s": 0.2313277560000131,
+            "token_ids": [
+              151645
+            ],
+            "content": ""
+          },
+          {
+            "elapsed_s": 0.2313277560000131,
+            "token_ids": [],
+            "content": ""
+          }
+        ],
+        "status": "success",
+        "done": true,
+        "http_status": 200,
+        "usage": {
+          "prompt_tokens": 34,
+          "completion_tokens": 2,
+          "total_tokens": 36
+        },
+        "error": null,
+        "finish_reason": "stop",
+        "request_wall_s": 0.23145269599999096,
+        "token_ids": [
+          3925,
+          151645
+        ],
+        "output_text": "OK",
+        "content_event_count": 1,
+        "stream_token_count": 2,
+        "usage_completion_tokens": 2,
+        "token_count_matches_usage": true,
+        "ttft_ms": 199.43649399999686,
+        "ttfc_ms": 199.43649399999686,
+        "ttft_including_client_queue_ms": 199.43649399999686,
+        "single_token_events": true,
+        "inter_token_arrival_ms": [
+          31.89126200001624
+        ],
+        "tpot_ms": 31.89126200001624
+      },
+      "passed": true
+    },
+    {
+      "case": "context_overflow",
+      "expected": "http_error",
+      "record": {
+        "id": "context_overflow",
+        "client_queue_ms": 0.0,
+        "body": {
+          "model": "Qwen/Qwen2.5-0.5B-Instruct",
+          "messages": [
+            {
+              "role": "user",
+              "content": "data data data data data data data data data data data data data data data data data data data data data data data data data data data data data data data data data data data data data data data data data data data data data data data data data data data data data data data data data data data data data data data data data data data data data data data data data data data data data data data data data data data data data data data data data data data data data data data data data data data data data data data data data data data data data data data data data data data data data data data data data data data data data data data data data data data data data data data data data data data data data data data data data data data data data data data data data data data data data data data data data data data data data data data data data data data data data data data data data data data data data data data data data data data data data data data data data data data data data data data data data data data data data data data data data data data data data data data data data data data data data data data data data data data data data data data data data data data data data data data data data data data data data data data data data data data data data data data data data data data data data data data data data data data data data data data data data data data data data data data data data data data data data data data data data data data data data data data data data data data data data data data data data data data data data data data data data data data data data data data data data data data data data data data data data data data data data data data data data data data data data data data data data data data data data data data data data data data data data data data data data data data data data data data data data data data data data data data data data data data data data data data data data data data data data data data data data data data data data data data data data data data data data data data data data data data data data data data data data data data data data data data data data data data data data data data data data data data data data data data data data data data data data data data data data data data data data data data data data data data data data data data data data data data data data data data data data data data data data data data data data data data data data data data data data data data data data data data data data data data data data data data data data data data data data data data data data data data data data data data data data data data data data data data data data data data data data data data data data data data data data data data data data data data data data data data data data data data data data data data data data data data data data data data data data data data data data data data data data data data data data data data data data data data data data data data data data data data data data data data data data data data data data data data data data data data data data data data data data data data data data data data data data data data data data data data data data data data data data data data data data data data data data data data data data data data data data data data data data data data data data data data data data data data data data data data data data data data data data data data data data data data data data data data data data data data data data data data data data data data data data data data data data data data data data data data data data data data data data data data data data data data data data data data data data data data data data data data data data data data data data data data data data data data data data data data data data data data data data data data data data data data data data data data data data data data data data data data data data data data data data data data data data data data data data data data data data data data data data data data data data data data data data data data data data data data data data data data data data data data data data data data data data data data data data data data data data data data data data data data data data data data data data data data data data data data data data data data data data data data data data data data data data data data data data data data data data data data data data data data data data data data data data data data data data data data data data data data data data data data data data data data data data data data data data data data data data data data data data data data data data data data data data data data data data data data data data data data data data data data data data data data data data data data data data data data data data data data data data data data data data data data data data data data data data data data data data data data data data data data data data data data data data data data data data data data data data data data data data data data data data data data data data data data data data data data data data data data data data data data data data data data data data data data data data data data data data data data data data data data data data data data data data data data data data data data data data data data data data data data data data data data data data data data data data data data data data data data data data data data data data data data data data data data data data data data data data data data data data data data data data data data data data data data data data data data data data data data data data data data data data data data data data data data data data data data data data data data data data data data data data data data data data data data data data data data data data data data data data data data data data data data data data data data data data data data data data data data data data data data data data data data data data data data data data data data data data data data data data data data data data data data data data data data data data data data data data data data data data data data data data data data data data data data data data data data data data data data data data data data data data data data data data data data data data data data data data data data data data data data data data data data data data data data data data data data data data data data data data data data data data data data data data data data data data data data data data data data data data data data data data data data data data data data data data data data data data data data data data data data data data data data data data data data data data data data data data data data data data data data data data data data data data data data data data data data data data data data data data data data data data data data data data data data data data data data data data data data data data data data data data data data data data data data data data data data data data data data data data data data data data data data data data data data data data data data data data data data data data data data data data data data data data data data data data data data data data data data data data data data data data data data data data data data data data data data data data data data data data data data data data data data data data data data data data data data data data data data data data data data data data data data data data data data data data data data data data data data data data data data data "
+            }
+          ],
+          "max_tokens": 32,
+          "temperature": 0,
+          "seed": 42,
+          "stream": true,
+          "stream_options": {
+            "include_usage": true
+          },
+          "return_token_ids": true
+        },
+        "events": [],
+        "status": "http_error",
+        "done": false,
+        "http_status": 400,
+        "usage": null,
+        "error": "{\"error\": {\"message\": \"Prompt and generation exceed 512-token context\", \"type\": \"invalid_request_error\"}}",
+        "request_wall_s": 0.0031103610000116078,
+        "token_ids": [],
+        "output_text": "",
+        "content_event_count": 0,
+        "stream_token_count": 0,
+        "usage_completion_tokens": null,
+        "token_count_matches_usage": false,
+        "ttft_ms": null,
+        "ttfc_ms": null,
+        "ttft_including_client_queue_ms": null,
+        "single_token_events": false,
+        "inter_token_arrival_ms": [],
+        "tpot_ms": null
+      },
+      "recovery": {
+        "id": "context_overflow-recovery",
+        "client_queue_ms": 0.0,
+        "body": {
+          "model": "Qwen/Qwen2.5-0.5B-Instruct",
+          "messages": [
+            {
+              "role": "user",
+              "content": "Reply with OK only."
+            }
+          ],
+          "max_tokens": 8,
+          "temperature": 0,
+          "seed": 42,
+          "stream": true,
+          "stream_options": {
+            "include_usage": true
+          },
+          "return_token_ids": true
+        },
+        "events": [
+          {
+            "elapsed_s": 0.0009165750000192929,
+            "token_ids": [],
+            "content": ""
+          },
+          {
+            "elapsed_s": 0.19860938400000805,
+            "token_ids": [
+              3925
+            ],
+            "content": "OK"
+          },
+          {
+            "elapsed_s": 0.22887981100001298,
+            "token_ids": [
+              151645
+            ],
+            "content": ""
+          },
+          {
+            "elapsed_s": 0.22887981100001298,
+            "token_ids": [],
+            "content": ""
+          }
+        ],
+        "status": "success",
+        "done": true,
+        "http_status": 200,
+        "usage": {
+          "prompt_tokens": 34,
+          "completion_tokens": 2,
+          "total_tokens": 36
+        },
+        "error": null,
+        "finish_reason": "stop",
+        "request_wall_s": 0.22893066299999987,
+        "token_ids": [
+          3925,
+          151645
+        ],
+        "output_text": "OK",
+        "content_event_count": 1,
+        "stream_token_count": 2,
+        "usage_completion_tokens": 2,
+        "token_count_matches_usage": true,
+        "ttft_ms": 198.60938400000805,
+        "ttfc_ms": 198.60938400000805,
+        "ttft_including_client_queue_ms": 198.60938400000805,
+        "single_token_events": true,
+        "inter_token_arrival_ms": [
+          30.27042700000493
+        ],
+        "tpot_ms": 30.27042700000493
+      },
+      "passed": true
+    },
+    {
+      "case": "invalid_max_tokens",
+      "expected": "http_error",
+      "record": {
+        "id": "invalid_max_tokens",
+        "client_queue_ms": 0.0,
+        "body": {
+          "model": "Qwen/Qwen2.5-0.5B-Instruct",
+          "messages": [
+            {
+              "role": "user",
+              "content": "Hello"
+            }
+          ],
+          "max_tokens": -1,
+          "temperature": 0,
+          "seed": 42,
+          "stream": true,
+          "stream_options": {
+            "include_usage": true
+          },
+          "return_token_ids": true
+        },
+        "events": [],
+        "status": "http_error",
+        "done": false,
+        "http_status": 400,
+        "usage": null,
+        "error": "{\"error\": {\"message\": \"max_tokens must be a positive integer\", \"type\": \"invalid_request_error\"}}",
+        "request_wall_s": 0.0005501489999915066,
+        "token_ids": [],
+        "output_text": "",
+        "content_event_count": 0,
+        "stream_token_count": 0,
+        "usage_completion_tokens": null,
+        "token_count_matches_usage": false,
+        "ttft_ms": null,
+        "ttfc_ms": null,
+        "ttft_including_client_queue_ms": null,
+        "single_token_events": false,
+        "inter_token_arrival_ms": [],
+        "tpot_ms": null
+      },
+      "recovery": {
+        "id": "invalid_max_tokens-recovery",
+        "client_queue_ms": 0.0,
+        "body": {
+          "model": "Qwen/Qwen2.5-0.5B-Instruct",
+          "messages": [
+            {
+              "role": "user",
+              "content": "Reply with OK only."
+            }
+          ],
+          "max_tokens": 8,
+          "temperature": 0,
+          "seed": 42,
+          "stream": true,
+          "stream_options": {
+            "include_usage": true
+          },
+          "return_token_ids": true
+        },
+        "events": [
+          {
+            "elapsed_s": 0.0009271320000152627,
+            "token_ids": [],
+            "content": ""
+          },
+          {
+            "elapsed_s": 0.20418817099999842,
+            "token_ids": [
+              3925
+            ],
+            "content": "OK"
+          },
+          {
+            "elapsed_s": 0.2450639570000135,
+            "token_ids": [
+              151645
+            ],
+            "content": ""
+          },
+          {
+            "elapsed_s": 0.2450639570000135,
+            "token_ids": [],
+            "content": ""
+          }
+        ],
+        "status": "success",
+        "done": true,
+        "http_status": 200,
+        "usage": {
+          "prompt_tokens": 34,
+          "completion_tokens": 2,
+          "total_tokens": 36
+        },
+        "error": null,
+        "finish_reason": "stop",
+        "request_wall_s": 0.24516789100002256,
+        "token_ids": [
+          3925,
+          151645
+        ],
+        "output_text": "OK",
+        "content_event_count": 1,
+        "stream_token_count": 2,
+        "usage_completion_tokens": 2,
+        "token_count_matches_usage": true,
+        "ttft_ms": 204.18817099999842,
+        "ttfc_ms": 204.18817099999842,
+        "ttft_including_client_queue_ms": 204.18817099999842,
+        "single_token_events": true,
+        "inter_token_arrival_ms": [
+          40.87578600001507
+        ],
+        "tpot_ms": 40.87578600001507
+      },
+      "passed": true
+    },
+    {
+      "case": "client_timeout",
+      "expected": "client_timeout",
+      "record": {
+        "id": "client_timeout",
+        "client_queue_ms": 0.0,
+        "body": {
+          "model": "Qwen/Qwen2.5-0.5B-Instruct",
+          "messages": [
+            {
+              "role": "user",
+              "content": "Write a detailed essay."
+            }
+          ],
+          "max_tokens": 128,
+          "temperature": 0,
+          "seed": 42,
+          "stream": true,
+          "stream_options": {
+            "include_usage": true
+          },
+          "return_token_ids": true
+        },
+        "events": [
+          {
+            "elapsed_s": 0.0009754840000084641,
+            "token_ids": [],
+            "content": ""
+          }
+        ],
+        "status": "client_timeout",
+        "done": false,
+        "http_status": 200,
+        "usage": null,
+        "error": null,
+        "request_wall_s": 0.002272091999998338,
+        "token_ids": [],
+        "output_text": "",
+        "content_event_count": 0,
+        "stream_token_count": 0,
+        "usage_completion_tokens": null,
+        "token_count_matches_usage": false,
+        "ttft_ms": null,
+        "ttfc_ms": null,
+        "ttft_including_client_queue_ms": null,
+        "single_token_events": false,
+        "inter_token_arrival_ms": [],
+        "tpot_ms": null
+      },
+      "recovery": {
+        "id": "client_timeout-recovery",
+        "client_queue_ms": 0.0,
+        "body": {
+          "model": "Qwen/Qwen2.5-0.5B-Instruct",
+          "messages": [
+            {
+              "role": "user",
+              "content": "Reply with OK only."
+            }
+          ],
+          "max_tokens": 8,
+          "temperature": 0,
+          "seed": 42,
+          "stream": true,
+          "stream_options": {
+            "include_usage": true
+          },
+          "return_token_ids": true
+        },
+        "events": [
+          {
+            "elapsed_s": 0.2004490249999833,
+            "token_ids": [],
+            "content": ""
+          },
+          {
+            "elapsed_s": 0.3977668789999882,
+            "token_ids": [
+              3925
+            ],
+            "content": "OK"
+          },
+          {
+            "elapsed_s": 0.4258847849999938,
+            "token_ids": [
+              151645
+            ],
+            "content": ""
+          },
+          {
+            "elapsed_s": 0.4258847849999938,
+            "token_ids": [],
+            "content": ""
+          }
+        ],
+        "status": "success",
+        "done": true,
+        "http_status": 200,
+        "usage": {
+          "prompt_tokens": 34,
+          "completion_tokens": 2,
+          "total_tokens": 36
+        },
+        "error": null,
+        "finish_reason": "stop",
+        "request_wall_s": 0.4260315500000047,
+        "token_ids": [
+          3925,
+          151645
+        ],
+        "output_text": "OK",
+        "content_event_count": 1,
+        "stream_token_count": 2,
+        "usage_completion_tokens": 2,
+        "token_count_matches_usage": true,
+        "ttft_ms": 397.7668789999882,
+        "ttfc_ms": 397.7668789999882,
+        "ttft_including_client_queue_ms": 397.7668789999882,
+        "single_token_events": true,
+        "inter_token_arrival_ms": [
+          28.117906000005632
+        ],
+        "tpot_ms": 28.117906000005632
+      },
+      "passed": true
+    },
+    {
+      "case": "client_cancel",
+      "expected": "client_cancelled",
+      "record": {
+        "id": "client_cancel",
+        "client_queue_ms": 0.0,
+        "body": {
+          "model": "Qwen/Qwen2.5-0.5B-Instruct",
+          "messages": [
+            {
+              "role": "user",
+              "content": "Write a detailed essay."
+            }
+          ],
+          "max_tokens": 128,
+          "temperature": 0,
+          "seed": 42,
+          "stream": true,
+          "stream_options": {
+            "include_usage": true
+          },
+          "return_token_ids": true,
+          "ignore_eos": true
+        },
+        "events": [
+          {
+            "elapsed_s": 0.0023708540000200173,
+            "token_ids": [],
+            "content": ""
+          },
+          {
+            "elapsed_s": 0.2002968570000121,
+            "token_ids": [
+              3851
+            ],
+            "content": "Title"
+          },
+          {
+            "elapsed_s": 0.23134592600001724,
+            "token_ids": [
+              25
+            ],
+            "content": ":"
+          },
+          {
+            "elapsed_s": 0.26127367300000515,
+            "token_ids": [
+              576
+            ],
+            "content": " The"
+          }
+        ],
+        "status": "client_cancelled",
+        "done": false,
+        "http_status": 200,
+        "usage": null,
+        "error": null,
+        "request_wall_s": 0.2613639420000027,
+        "token_ids": [
+          3851,
+          25,
+          576
+        ],
+        "output_text": "Title: The",
+        "content_event_count": 3,
+        "stream_token_count": 3,
+        "usage_completion_tokens": null,
+        "token_count_matches_usage": false,
+        "ttft_ms": 200.2968570000121,
+        "ttfc_ms": 200.2968570000121,
+        "ttft_including_client_queue_ms": 200.2968570000121,
+        "single_token_events": true,
+        "inter_token_arrival_ms": [
+          31.049069000005147,
+          29.927746999987903
+        ],
+        "tpot_ms": 30.488407999996525
+      },
+      "recovery": {
+        "id": "client_cancel-recovery",
+        "client_queue_ms": 0.0,
+        "body": {
+          "model": "Qwen/Qwen2.5-0.5B-Instruct",
+          "messages": [
+            {
+              "role": "user",
+              "content": "Reply with OK only."
+            }
+          ],
+          "max_tokens": 8,
+          "temperature": 0,
+          "seed": 42,
+          "stream": true,
+          "stream_options": {
+            "include_usage": true
+          },
+          "return_token_ids": true
+        },
+        "events": [
+          {
+            "elapsed_s": 0.03287578900000199,
+            "token_ids": [],
+            "content": ""
+          },
+          {
+            "elapsed_s": 0.23627356000000077,
+            "token_ids": [
+              3925
+            ],
+            "content": "OK"
+          },
+          {
+            "elapsed_s": 0.2697399589999918,
+            "token_ids": [
+              151645
+            ],
+            "content": ""
+          },
+          {
+            "elapsed_s": 0.2697399589999918,
+            "token_ids": [],
+            "content": ""
+          }
+        ],
+        "status": "success",
+        "done": true,
+        "http_status": 200,
+        "usage": {
+          "prompt_tokens": 34,
+          "completion_tokens": 2,
+          "total_tokens": 36
+        },
+        "error": null,
+        "finish_reason": "stop",
+        "request_wall_s": 0.26989078100001507,
+        "token_ids": [
+          3925,
+          151645
+        ],
+        "output_text": "OK",
+        "content_event_count": 1,
+        "stream_token_count": 2,
+        "usage_completion_tokens": 2,
+        "token_count_matches_usage": true,
+        "ttft_ms": 236.27356000000077,
+        "ttfc_ms": 236.27356000000077,
+        "ttft_including_client_queue_ms": 236.27356000000077,
+        "single_token_events": true,
+        "inter_token_arrival_ms": [
+          33.46639899999104
+        ],
+        "tpot_ms": 33.46639899999104
+      },
+      "passed": true
+    }
+  ],
+  "passed": 5,
+  "total": 5
+}

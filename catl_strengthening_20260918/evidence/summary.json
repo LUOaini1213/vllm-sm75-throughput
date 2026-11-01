@@ -1,0 +1,193 @@
+{
+  "run_directory": "evidence\\local_20260918T054433Z",
+  "backend": "transformers-reference",
+  "hardware": "NVIDIA GeForce GTX 1650",
+  "checks": [
+    {
+      "label": "fp16",
+      "successful_benchmark_requests": 48,
+      "validated_generated_tokens": 1536,
+      "reliability_passed": 5,
+      "quality_exact_matches": 3,
+      "quality_total": 16
+    },
+    {
+      "label": "fp32",
+      "successful_benchmark_requests": 48,
+      "validated_generated_tokens": 1536,
+      "reliability_passed": 5,
+      "quality_exact_matches": 3,
+      "quality_total": 16
+    }
+  ],
+  "summary": [
+    {
+      "label": "fp16",
+      "concurrency": 1,
+      "requests": 16,
+      "tokens_per_s": 24.27869278025585,
+      "two_run_tokens_per_s": [
+        22.368926426188967,
+        26.544994545773527
+      ],
+      "ttft_median_ms": 201.4925909999974,
+      "tpot_median_ms": 34.260360693548456,
+      "ttft_1s_slo_success_count": 16
+    },
+    {
+      "label": "fp16",
+      "concurrency": 2,
+      "requests": 16,
+      "tokens_per_s": 23.711587638636505,
+      "two_run_tokens_per_s": [
+        22.193307253815583,
+        25.45285930095743
+      ],
+      "ttft_median_ms": 1486.5562949999999,
+      "tpot_median_ms": 36.18287824193548,
+      "ttft_1s_slo_success_count": 2
+    },
+    {
+      "label": "fp16",
+      "concurrency": 4,
+      "requests": 16,
+      "tokens_per_s": 24.44912871700326,
+      "two_run_tokens_per_s": [
+        23.585546759882867,
+        25.378354099165243
+      ],
+      "ttft_median_ms": 3778.674899500018,
+      "tpot_median_ms": 35.19404182258054,
+      "ttft_1s_slo_success_count": 2
+    },
+    {
+      "label": "fp32",
+      "concurrency": 1,
+      "requests": 16,
+      "tokens_per_s": 27.764336267559315,
+      "two_run_tokens_per_s": [
+        27.35957889864939,
+        28.181249422958583
+      ],
+      "ttft_median_ms": 54.874025499998424,
+      "tpot_median_ms": 35.84094916129055,
+      "ttft_1s_slo_success_count": 16
+    },
+    {
+      "label": "fp32",
+      "concurrency": 2,
+      "requests": 16,
+      "tokens_per_s": 30.085197647773505,
+      "two_run_tokens_per_s": [
+        30.11030630075814,
+        30.06013083555699
+      ],
+      "ttft_median_ms": 1102.9690735000058,
+      "tpot_median_ms": 32.08978766129041,
+      "ttft_1s_slo_success_count": 2
+    },
+    {
+      "label": "fp32",
+      "concurrency": 4,
+      "requests": 16,
+      "tokens_per_s": 28.385326141185573,
+      "two_run_tokens_per_s": [
+        27.36511097488419,
+        29.484557675068285
+      ],
+      "ttft_median_ms": 3200.9302980000175,
+      "tpot_median_ms": 35.34570032258034,
+      "ttft_1s_slo_success_count": 2
+    }
+  ],
+  "reference_generate_equivalence": {
+    "passed": 4,
+    "total": 4
+  },
+  "previous_incomplete_runs": [
+    {
+      "directory": "evidence\\local_20260918T053721Z",
+      "backend": "vllm",
+      "errors": [
+        "RuntimeError: fp16 server exited 1"
+      ]
+    },
+    {
+      "directory": "evidence\\local_20260918T053934Z",
+      "backend": "vllm",
+      "errors": [
+        "RuntimeError: fp16 server exited 1"
+      ]
+    },
+    {
+      "directory": "evidence\\local_20260918T054332Z",
+      "backend": "transformers-reference",
+      "errors": [
+        "RuntimeError: Warmup failed: {'id': 'warmup', 'client_queue_ms': 0.0, 'body': {'model': 'Qwen/Qwen2.5-0.5B-Instruct', 'messages': [{'role': 'user', 'content': 'Count from one to four.'}], 'max_tokens': 8, 'temperature': 0, 'seed': 42, 'stream': True, 'stream_options': {'include_usage': True}, 'return_token_ids': True}, 'events': [], 'status': 'protocol_or_connection_error', 'done': False, 'http_status': 200, 'usage': None, 'error': \"ClientPayloadError: Response payload is not completed: <TransferEncodingError: 400, message='Not enough data to satisfy transfer length header.'>\", 'request_wall_s': 0.021349058999998505, 'token_ids': [], 'output_text': '', 'content_event_count': 0, 'stream_token_count': 0, 'usage_completion_tokens': None, 'token_count_matches_usage': False, 'ttft_ms': None, 'ttfc_ms': None, 'ttft_including_client_queue_ms': None, 'single_token_events': False, 'inter_token_arrival_ms': [], 'tpot_ms': None}"
+      ]
+    }
+  ],
+  "artifacts": [
+    {
+      "path": "evidence\\local_20260918T054433Z\\fp16_quality.json",
+      "bytes": 80615,
+      "sha256": "0060145a0ec0b9b5a58188eec1180942537d10091174448e82e423afd0509d3d"
+    },
+    {
+      "path": "evidence\\local_20260918T054433Z\\fp16_reliability.json",
+      "bytes": 24857,
+      "sha256": "ddb3dc722ce60564e69e766cf27a2f62864880f09670414abb5be2181d2d5737"
+    },
+    {
+      "path": "evidence\\local_20260918T054433Z\\fp16_server.log",
+      "bytes": 688,
+      "sha256": "120510573008bd15c151e61696ad708ce32bf48852b6a7189e695168f4a1a920"
+    },
+    {
+      "path": "evidence\\local_20260918T054433Z\\fp16_sweep.json",
+      "bytes": 445655,
+      "sha256": "77821a27d91b78c3bdf31a193751a78069d1adb48c2186c2e148707ca93e1b72"
+    },
+    {
+      "path": "evidence\\local_20260918T054433Z\\fp32_quality.json",
+      "bytes": 80182,
+      "sha256": "68d9e6279d1842b33dea1c3b7beb500b87b89645c35884321525cc5a6f569d49"
+    },
+    {
+      "path": "evidence\\local_20260918T054433Z\\fp32_reliability.json",
+      "bytes": 24852,
+      "sha256": "85daaeddc547fd820c15d9b3d5423af0e64b6c53dc889e74c2ee994ba3175a57"
+    },
+    {
+      "path": "evidence\\local_20260918T054433Z\\fp32_server.log",
+      "bytes": 532,
+      "sha256": "a0ef438ca7926b3e8f8ff812d9a82f864bfcceccdb718369fade76d9078aa1a0"
+    },
+    {
+      "path": "evidence\\local_20260918T054433Z\\fp32_sweep.json",
+      "bytes": 445889,
+      "sha256": "c0a42df66353261f0ff97ec196f5c3b7995ba16fad449f4bc879d084eac91962"
+    },
+    {
+      "path": "evidence\\local_20260918T054433Z\\generate_equivalence.json",
+      "bytes": 2305,
+      "sha256": "4ac58b81b9bc8c31c9919f1f88065f65328ce79764aff48699eff8395c8ad376"
+    },
+    {
+      "path": "evidence\\local_20260918T054433Z\\generate_equivalence_repetition1.json",
+      "bytes": 2046,
+      "sha256": "2b200ba14458683bea00d6751938bb333ebf0de10dc6f150ebc935b553c60f7b"
+    },
+    {
+      "path": "evidence\\local_20260918T054433Z\\manifest.json",
+      "bytes": 10225,
+      "sha256": "daaa324ed8ee2a3a48ec7173633b8f6210e6359fd5e3dcc25582d8f5d58fb4bf"
+    },
+    {
+      "path": "evidence\\local_20260918T054433Z\\precision_quality_comparison.json",
+      "bytes": 2188,
+      "sha256": "72f19104029c9d9417b1a172623eef4c2abc59f762385fca456116ff2d58976a"
+    }
+  ],
+  "scope": "GPU Transformers serialized reference service; not vLLM/continuous-batching performance; no new INT4 quality data"
+}
