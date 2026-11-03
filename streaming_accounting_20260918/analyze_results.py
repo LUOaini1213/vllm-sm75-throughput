@@ -1,7 +1,13 @@
-"""Verify evidence and render a compact report without inventing missing runs."""
+"""Verify evidence and render a compact report without inventing missing runs.
+
+`python analyze_results.py` rewrites evidence/summary.json and RESULTS.md.
+`python analyze_results.py --check` rebuilds both in memory from the raw evidence
+and exits 1 if either committed file differs (CI runs this; stdlib only).
+"""
 import hashlib
 import json
 import statistics
+import sys
 from pathlib import Path
 
 HERE = Path(__file__).resolve().parent
@@ -12,8 +18,8 @@ def read(path):
     return json.loads(path.read_text(encoding="utf-8"))
 
 
-def main():
-    runs = [(p, read(p)) for p in sorted(EVIDENCE.glob("local_*/manifest.json"))]
+def build():
+    runs =[(p, read(p)) for p in sorted(EVIDENCE.glob("local_*/manifest.json"))]
     complete = [(p, m) for p, m in runs if m.get("completed")]
     if not complete:
         raise RuntimeError("No completed real run; no performance report created")
@@ -49,19 +55,19 @@ def main():
                 "ttft_median_ms": statistics.median(r["ttft_ms"] for r in rs),
                 "tpot_median_ms": statistics.median(r["tpot_ms"] for r in rs),
                 "ttft_1s_slo_success_count": sum(r["ttft_ms"] <= 1000 for r in rs)})
-    for p in root.glob("*"):
+    for p in sorted(root.glob("*")):
         if p.is_file():
-            artifacts.append({"path": str(p.relative_to(HERE)), "bytes": p.stat().st_size,
+            artifacts.append({"path": p.relative_to(HERE).as_posix(), "bytes": p.stat().st_size,
                               "sha256": hashlib.sha256(p.read_bytes()).hexdigest()})
-    report = {"run_directory": str(root.relative_to(HERE)), "backend": manifest["backend"],
+    report = {"run_directory": root.relative_to(HERE).as_posix(), "backend": manifest["backend"],
               "hardware": manifest["gpu"], "checks": checks, "summary": summaries,
               "reference_generate_equivalence": {"passed": equivalence["passed"], "total": equivalence["total"]},
-              "previous_incomplete_runs": [{"directory": str(p.parent.relative_to(HERE)), "backend": m.get("backend", "vllm"),
+              "previous_incomplete_runs": [{"directory": p.parent.relative_to(HERE).as_posix(), "backend": m.get("backend", "vllm"),
                   "errors": [e.get("error") for e in m["experiments"] if e.get("error")]} for p, m in runs if not m.get("completed")],
               "artifacts": artifacts,
               "scope": "GPU Transformers serialized reference service; not vLLM/continuous-batching performance; no new INT4 quality data"}
-    (EVIDENCE / "summary.json").write_text(json.dumps(report, ensure_ascii=False, indent=2), encoding="utf-8")
-    lines = ["# 实跑结果与岗位差距", "", f"实跑证据：`{report['run_directory']}`。", "",
+    summary_text = json.dumps(report, ensure_ascii=False, indent=2)
+    lines = ["# 实跑结果与未覆盖范围", "", f"实跑证据：`{report['run_directory']}`。", "",
              "GTX 1650 4GB，WSL Ubuntu，PyTorch 2.13.0+cu130 / Transformers 5.16.1，缓存 Qwen2.5-0.5B-Instruct，512上下文。",
              "**实际成功的是 Transformers 串行参考服务；vLLM 本次未启动成功。** 两种精度从同一缓存权重转换，不是新量化实验。", "",
              "| 精度 | 客户端并发 | 请求数（两轮） | 成功输出 token/s | TTFT中位 ms | TPOT中位 ms | TTFT≤1s |",
@@ -82,14 +88,32 @@ def main():
               "- 显式 V1 + TRITON_ATTN 后引擎 SIGBUS；未修改驱动/环境、未假称修复。",
               "- 参考服务初次因 Transformers 5 的聊天模板返回值结构导致张量转换失败；显式 return_dict=False 后本次完整实验通过。",
               "- 两次vLLM日志与参考服务初次失败均在各自时间戳目录，不覆盖旧失败。", "",
-              "## 最稳妥的项目补充写法", "",
+              "## 一句话摘要", "",
               "补建基于 token IDs 与 usage 交叉核验的流式测量工具，分别记录首 token、客户端排队、逐 token 间隔和失败请求；在本机 GPU 的 Qwen 0.5B 参考服务完成两种精度、三档并发共96次请求及10组异常恢复检查，保留兼容性失败和原始证据。", "",
               "这段是本次 AI 辅助实现的新增练习。原有 T4 CUDA Graph 结果仍按历史片段计数口径说明，不写4.42倍干净收益。", "",
               "## 尚未补齐", "",
-              "多GPU/分布式训练、集群调度、量化算法或QAT、公开大规模准确率基准、长上下文、高可用和生产SLO仍无新实证。现阶段更适合说具备单机部署排障、基准测量与验证经验，不能说已经满足完整训推平台开发经验。"]
-    (HERE / "RESULTS.md").write_text("\n".join(lines) + "\n", encoding="utf-8")
+              "多GPU/分布式训练、集群调度、量化算法或QAT、公开大规模准确率基准、长上下文、高可用和生产SLO仍无新实证；本目录只覆盖单机部署排障、基准测量与验证。"]
+    outputs = {EVIDENCE / "summary.json": summary_text.encode("utf-8"),
+               HERE / "RESULTS.md": ("\n".join(lines) + "\n").encode("utf-8")}
+    return report, checks, summaries, outputs
+
+
+def main(argv=None):
+    argv = sys.argv[1:] if argv is None else argv
+    report, checks, summaries, outputs = build()
+    if "--check" in argv:
+        stale = [p.relative_to(HERE).as_posix() for p, data in outputs.items()
+                 if not p.is_file() or p.read_bytes() != data]
+        if stale:
+            print("FAIL: stale, regenerate with python analyze_results.py: " + ", ".join(stale))
+            return 1
+        print("PASS: evidence/summary.json and RESULTS.md match the raw evidence")
+        return 0
+    for path, data in outputs.items():
+        path.write_bytes(data)  # LF on every platform, so --check is byte-stable
     print(json.dumps({"backend": report["backend"], "checks": checks, "summary": summaries}, ensure_ascii=False, indent=2))
+    return 0
 
 
 if __name__ == "__main__":
-    main()
+    sys.exit(main())

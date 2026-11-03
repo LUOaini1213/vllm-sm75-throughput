@@ -24,7 +24,7 @@
       "label": "fp16",
       "command": [
         "/root/vllmbench/.venv/bin/python",
-        "/mnt/c/Users/LW/Desktop/\u6c42\u804c/04_\u4f5c\u54c1\u4e0e\u4ee3\u7801/vllm-sm75-throughput/catl_strengthening_20260918/reference_service.py",
+        "<repo>/streaming_accounting_20260918/reference_service.py",
         "--dtype",
         "half",
         "--device",
@@ -64,7 +64,7 @@
       "label": "fp32",
       "command": [
         "/root/vllmbench/.venv/bin/python",
-        "/mnt/c/Users/LW/Desktop/\u6c42\u804c/04_\u4f5c\u54c1\u4e0e\u4ee3\u7801/vllm-sm75-throughput/catl_strengthening_20260918/reference_service.py",
+        "<repo>/streaming_accounting_20260918/reference_service.py",
         "--dtype",
         "float",
         "--device",
