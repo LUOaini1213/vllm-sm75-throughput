@@ -8,7 +8,7 @@ Traceback (most recent call last):
   File "/root/vllmbench/.venv/lib/python3.12/site-packages/aiohttp/web_app.py", line 559, in _handle
     return await handler(request)
            ^^^^^^^^^^^^^^^^^^^^^^
-  File "/mnt/c/Users/LW/Desktop/求职/04_作品与代码/vllm-sm75-throughput/catl_strengthening_20260918/reference_service.py", line 53, in completions
+  File "<repo>/streaming_accounting_20260918/reference_service.py", line 53, in completions
     current = torch.tensor([ids], device=device)
               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 RuntimeError: Could not infer dtype of tokenizers.Encoding
