@@ -1,8 +1,14 @@
 # sm_75 推理吞吐分析：GTX 1650 上的 fp16 GEMM 塌陷，与 Tesla T4 上的解码 CUDA graph 捕获上限
 
-> **2026-09-18 流式计数更正：**旧 `bench_serving.py` 与 notebook 中 `probe.py` 将每个非空 `delta.content` 计为一个 token，未保存服务端 usage/token IDs。旧表中的 TPOT、tok/s 应读作内容片段计数下的近似间隔和吞吐，不能独立证明严格 token 性能；TTFT 是首个非空内容到达时间。batch32 35.74→10.26 ms 的 3.48 倍仅属于历史近似统计量，4.42 倍旧吞吐还含未解释墙钟停顿，不应作为纯优化收益。新的压测、token ID/usage 核对与本机测试单独保存在 [`catl_strengthening_20260918/`](catl_strengthening_20260918/)，不与历史 T4 测量合并。
-
 [![CI](https://github.com/LUOaini1213/vllm-sm75-throughput/actions/workflows/ci.yml/badge.svg)](https://github.com/LUOaini1213/vllm-sm75-throughput/actions/workflows/ci.yml)
+
+- **做了什么**：在 GTX 1650（`sm_75`，无 Tensor Core）上部署 vLLM 0.28.0 做吞吐压测并逐个排除原因，再到 Colab Tesla T4 上做 5 组跑前写死判据的对照（GEMM、前缀复用、AWQ/GPTQ、roofline、SGLang 解码 CUDA graph）。
+- **发现一**：GTX 1650 上 fp16 `[M,896]@[896,4864]` 从 M=1 的 99.5 GiB/s 掉到 M=2 的 4.3 GiB/s（0.04×），服务吞吐从并发 1 的 119.5 掉到并发 2 的 11.0 tok/s（10.9 倍）；同一脚本在 T4 上是 0.83×。主要解释是缺 Tensor Core 时 cuBLAS 的 fp16 小 M 路径，但两次运行的 torch / CUDA / 驱动 / 系统也不同，还不是只差一个变量的对照。
+- **发现二**：SGLang 0.5.19 按显存档位把 T4 的解码 CUDA graph 上限写死为 8；显式 `--cuda-graph-max-bs-decode 32` 后 batch 32 的 TPOT 从 35.74 降到 10.26 ms（3.48×，旧客户端按内容片段计数的历史近似值）。
+- **证据边界**：T4 侧每个数字都有 `results_t4/` 原始文件，CI 里的 `check_claims.py` 逐个回算；GTX 1650 侧（第一～五节）只有 `--enforce-eager` 那一轮的原始 JSON，其余是 2026-09-02 那次运行的 README 转录，原始日志没有留下。
+- **English**: vLLM throughput on `sm_75`. On a GTX 1650 (no tensor cores) fp16 GEMM bandwidth drops from 99.5 to 4.3 GiB/s between M=1 and M=2 and serving throughput falls 10.9x at concurrency 2; the same script on a T4 gives 0.83x, but torch/CUDA/driver also differ, so tensor cores are the leading explanation, not a controlled result. SGLang 0.5.19 caps T4 decode CUDA graphs at batch 8; raising the cap cut batch-32 TPOT 3.48x (historical chunk-count client). T4 numbers are pinned to committed files by CI; GTX 1650 numbers are transcriptions.
+
+> **2026-09-18 流式计数更正：**旧 `bench_serving.py` 与 notebook 中 `probe.py` 将每个非空 `delta.content` 计为一个 token，未保存服务端 usage/token IDs。旧表中的 TPOT、tok/s 应读作内容片段计数下的近似间隔和吞吐，不能独立证明严格 token 性能；TTFT 是首个非空内容到达时间。batch32 35.74→10.26 ms 的 3.48 倍仅属于历史近似统计量，4.42 倍旧吞吐还含未解释墙钟停顿，不应作为纯优化收益。新的压测、token ID/usage 核对与本机测试单独保存在 [`streaming_accounting_20260918/`](streaming_accounting_20260918/)，不与历史 T4 测量合并。
 
 > **2026-10-12 客户端完整性更新：** 当前 `bench_serving.py` / `quick_bench.py`
 > 共享严格 HTTP/SSE 校验，输出 schema v2。吞吐仅使用服务端最终
@@ -10,24 +16,31 @@
 > 下文表格与 notebook 是历史实验，保留原始数值和旧客户端来源，未用新客户端重测。
 > 离线协议反例不能证明旧实测受到影响。详见 [指标边界与验收](docs/serving-integrity.md)。
 
-无需模型/GPU的检查：`python -B -m unittest discover -s tests -v`，
-`python -B verify_historical.py`。当前客户端运行命令与旧输出的区别见上述说明。
+无需模型/GPU的检查（Python 3.11+，`pip install -r requirements.txt`，Windows / Linux 均可）：
+`python -B -m unittest discover -s tests -v`、`python -B verify_historical.py`、`python check_claims.py`、
+`python tools_check_notebooks.py`、`python streaming_accounting_20260918/analyze_results.py --check`。
+`verify_historical.py` 在浅克隆（`--depth 1`）或 ZIP 里会跳过与 `d933443` 源码的逐字节比对并提示，
+哈希校验照做；完整比对需要全历史（`git fetch --unshallow`），CI 用 `--require-git-source` 强制。
+当前客户端运行命令与旧输出的区别见上述说明。
 
-> ### ✅ 验证状态（2026-09-02 已确认）
+> ### 验证状态（2026-11-03 更正措辞）
 >
 > 第四节把吞吐塌陷归因于「`sm_75` 缺少 Tensor Core 时 cuBLAS 的 fp16 GEMM 小 M 路径病态」。
-> **该归因已由受控对照实验确认。**
->
-> 在 **Tesla T4** 上重跑同一份 `gemm_cliff.py`。T4 与 GTX 1650 同为 `sm_75`、同为 Turing，
-> **唯一差别是 T4 保留了 Tensor Core，而 GTX 16 系将其移除**：
+> 在 **Tesla T4** 上重跑同一份 `gemm_cliff.py`，塌陷没有出现。这支持该归因，
+> **但不是只差一个变量的受控对照**：T4 保留了 Tensor Core、GTX 16 系移除了它，
+> 同时两次运行的 torch（2.13.0+cu130 对 2.11.0+cu128）、CUDA（13.0 对 12.8）、驱动、
+> 系统（WSL2 对 Colab）和 SM 数（14 对 40）也都不同。版本差异表与补成受控对照所需的重跑见
+> [`results_t4/corrections_2026-11-03.txt`](results_t4/corrections_2026-11-03.txt)。
 >
 > | fp16 `[M,896]@[896,4864]` | M=1 | M=2 | 相对 M=1 |
 > |---|---|---|---|
 > | GTX 1650（**无** Tensor Core） | 99.5 GiB/s | **4.3 GiB/s** | **0.04×** |
 > | Tesla T4（**有** Tensor Core） | 106.7 GiB/s | **88.1 GiB/s** | **0.83×** |
 >
-> T4 上塌陷完全消失，三组形状一致（0.83× / 0.85× / 0.86×）。
-> 两卡 M=1→2 的比值相差约 **20 倍**，控制变量唯有 Tensor Core 的有无 —— 归因成立。
+> GTX 1650 一行是 2026-09-02 运行的转录，原始输出没有留存；T4 一行有原始文件。
+> T4 上塌陷消失，三组形状一致（0.83× / 0.85× / 0.86×），两卡 M=1→2 的比值相差约 **20 倍**。
+> Tensor Core 的有无是最可能的解释；cuBLAS 版本不同带来的启发式差异尚未排除，
+> 要等版本对齐的重跑（需要 GPU，尚未做）。
 >
 > 反向佐证：T4 上 fp32 在大 M 时衰减**快于** fp16（M=64 时 0.39× vs 0.74×），
 > 即「有 Tensor Core 时 fp16 更耐受大 M」，与 GTX 1650 上的表现完全相反。
@@ -41,9 +54,10 @@
 
 ## 本仓两条主线
 
-**一、fp16 GEMM 小 M 塌陷（GTX 1650 → Tesla T4 受控对照）。** 一张移除了 Tensor Core 的
+**一、fp16 GEMM 小 M 塌陷（GTX 1650 → Tesla T4 对照）。** 一张移除了 Tensor Core 的
 sm_75 卡上，fp16 `[M,896]@[896,4864]` 从 M=1 的 99.5 GiB/s 塌到 M=2 的 4.3 GiB/s（0.04×）；
-同为 sm_75、只多一个 Tensor Core 的 T4 上跑同一份 `gemm_cliff.py`，同一比值是 0.83×。
+同为 sm_75、带 Tensor Core 的 T4 上跑同一份 `gemm_cliff.py`，同一比值是 0.83×
+（两次运行的 torch / CUDA / 驱动版本也不同，见上）。
 vLLM 的 batch 悬崖是这一底层现象的放大。已上报 PyTorch 与 vLLM 上游（链接见上）。
 → 第一～五节
 
@@ -64,10 +78,16 @@ vLLM 的 batch 悬崖是这一底层现象的放大。已上报 PyTorch 与 vLLM
 ---
 
 在一张 **GTX 1650（4 GiB，Turing sm_75，无 Tensor Core）** 上把 vLLM 0.28.0 跑起来，
-压测并发吞吐，过程中发现并定位了一个 **fp16 批量推理吞吐塌陷 23 倍** 的问题。
+压测并发吞吐，过程中发现并定位了一个 **fp16 批量推理吞吐塌陷** 的问题：
+服务吞吐在并发 1→2 时掉 **10.9 倍**，底层 fp16 GEMM 的权重带宽掉约 **23 倍**（99.5 → 4.3 GiB/s）。
 
 环境：Windows 11 + WSL2 Ubuntu 24.04.4（内核 6.18.33）· vLLM 0.28.0 ·
 模型 Qwen2.5-0.5B-Instruct（hidden 896 / intermediate 4864）。
+
+> **第一～五节的数字是 2026-09-02 那次本地运行的转录。** 除第三节 `--enforce-eager` 那一行
+> （[`results_local/gtx1650_sweep_enforce_eager_2026-09-02.json`](results_local/gtx1650_sweep_enforce_eager_2026-09-02.json)）外，
+> 原始日志没有留存，表格是当时从终端抄进来的；`check_claims.py` 只能核它们彼此自洽，
+> 核不了它们与原始输出一致。缺口清单见 [`results_local/README.md`](results_local/README.md)。
 
 ---
 
@@ -98,7 +118,7 @@ vLLM 直接回落 `TRITON_ATTN`。这是「同一份 vLLM，换张卡就是另�
 
 ---
 
-## 二、异常：并发从 1 变成 2，吞吐掉 10 倍
+## 二、异常：并发从 1 变成 2，吞吐掉 10.9 倍
 
 首轮并发扫描（fp16）：
 
@@ -155,10 +175,14 @@ TPOT 在并发 2→32 之间恒定在 180~185 ms —— **每步耗时与实际 
 
 **墙钟从 N=2 到 N=16 精确锁死在 7.8 秒。** 吞吐线性上升纯粹因为同样时间产出更多 token。
 
-换算成权重读取带宽（0.5B 模型每 step 约读 1 GiB 权重）：
+换算成权重读取带宽（0.5B 模型每 step 约读 1 GiB 权重，按 1 GiB ≈ 1 GB 粗算）：
 
-- batch=1：9 ms/step → **约 111 GB/s**，接近该卡带宽上限
-- batch≥2：122 ms/step → **约 8 GB/s**，仅峰值的 6%（与观察到的「显存 4% 占用」吻合）
+- batch=1：墙钟 0.58 s ÷ 64 token ≈ 9.1 ms/step → **约 110 GB/s**，接近该卡带宽上限
+- batch≥2：每步耗时落在 122 ms（墙钟 7.81 s ÷ 64，假设 64 个 token 全部产出）与 183 ms
+  （同表 TPOT p50 的上沿 183.47 ms，旧客户端按内容片段计时）之间 → **约 5.5–8.2 GB/s**，
+  只有 batch=1 时的 5–7%（与观察到的「显存控制器 4% 占用」同量级）。
+  两种算法给出不同的每步耗时，是因为旧客户端数的是内容片段、不是 token（见顶部 2026-09-18 更正），
+  所以这里只给区间。
 
 batch=1 是 **GEMV**（矩阵×向量），batch≥2 变成 **GEMM**（矩阵×矩阵）。假设指向 GEMM 内核选择。
 
@@ -222,7 +246,8 @@ fp16 只在 batch=1 时有优势。
 本节只覆盖本地 GTX 1650 那一轮（第一～五节）。云端 Tesla T4 的全部实验在文末的
 notebook 表里，Colab 一键跑，不需要本地环境。
 
-环境准备没有脚本：在 WSL2 Ubuntu 24.04 里建一个 venv 装 vLLM 0.28.0，
+环境准备没有脚本：在 WSL2 Ubuntu 24.04 里建 `~/vllmbench/.venv` 并装 vLLM 0.28.0
+（`serve.sh` / `serve_eager.sh` 会 `cd "$HOME/vllmbench"` 并激活这个 venv，路径要对上），
 再加上第一节那张表「处理」列的四条（`--gpu-memory-utilization 0.75`、
 `VLLM_WSL2_ENABLE_PIN_MEMORY=1`、`apt install build-essential`、`apt install python3.12-dev`）。
 
@@ -238,7 +263,9 @@ python bench_serving.py
 # 前缀复用对照
 python bench_serving.py --prefix-test
 
-# 稳态突发测试（一次性发 N 条，期间无新请求到达）
+# 稳态突发测试（一次性发 N 条，期间无新请求到达）。2026-11-03 起同样走 serving_metrics：
+# token 取服务端 usage、校验 HTTP/SSE，任一请求失败则退出 2，产出 isolate_results_v2.json。
+# 第三、五节那两张突发表是旧版测的，旧版字节冻结在 historical/d933443/isolate.py.txt
 python isolate.py
 
 # 裸 GEMM 微基准 —— 根因所在，不需要起服务
@@ -250,7 +277,7 @@ python gemm_cliff.py
 | `serve.sh` / `serve_eager.sh` | 服务启动（含四个坑的处理）/ 关 CUDA Graph 对照组 |
 | `bench_serving.py` | 并发扫描，测 TTFT / TPOT / 吞吐，兼前缀复用对照 |
 | `quick_bench.py` | 单档定点测 TPOT，用于快速对比两个服务端配置 |
-| `isolate.py` | 稳态突发测试，隔离 prefill 插队的影响 |
+| `isolate.py` | 稳态突发测试，隔离 prefill 插队的影响（旧版：`historical/d933443/isolate.py.txt`） |
 | `gemm_cliff.py` | 裸 GEMM 微基准，定位根因 |
 | `check_claims.py` | 纯 CPU 校验：把本 README 里的数字从结果文件与 notebook 输出回算一遍 |
 | `tools_check_notebooks.py` | notebook 静态检查，六条规则（见文末） |
@@ -537,6 +564,13 @@ D_default_backend@4 三格超阈值，它们在脚本里是**具名白名单**�
 而且白名单里的格子如果哪天不再离群，脚本同样会红（防止白名单变成挡箭牌）。
 最后把 README 与结果文件里的每个比值、以及第一屏那张 GEMM 对照表逐个回算。
 把 README 里的 `4.42×` 改成 `4.50×`，`python check_claims.py` 立刻退出 1。
+2026-11-03 起它还核三件事：第一屏一览里的 99.5 / 4.3 / 0.04× / 119.5 / 11.0 / 10.9 / 0.83× / 35.74 / 10.26 / 3.48×
+都能从结果文件或 README 正文的表回算；第三节由突发表换算出的 122 / 183 ms 与 5.5–8.2 GB/s；
+以及超出证据的「只差 Tensor Core 一个变量」类措辞（禁用词表见脚本里的 `OVERCLAIMS`）不再出现，版本差异与「转录」说明必须在场。
+
+另有两道门：`streaming_accounting_20260918/analyze_results.py --check` 从原始证据重建
+`streaming_accounting_20260918/evidence/summary.json` 与 `streaming_accounting_20260918/RESULTS.md` 并逐字节比对；CI 还 grep 所有受版本控制的文本文件，
+出现本机用户目录路径（`/mnt/c/Users/…`、`C:\Users\…`）就失败。
 
 **`tools_check_notebooks.py`** 是 notebook 静态检查，六条规则各对应一次真实踩坑
 （嵌套引号吞掉字符串、非法 `%` 格式符、正则缺捕获组配 `group(1)`、循环里的宽 `except` 等）。
