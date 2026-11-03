@@ -20,6 +20,9 @@ jobs:
       - run: python -O -B -m unittest discover -s tests -v
       - run: python -B verify_historical.py --require-git-source
       - run: python -O -B verify_historical.py --require-git-source
+      - name: 2026-09-18 exercise client tests (need aiohttp)
+        working-directory: streaming_accounting_20260918
+        run: python -B -m unittest -v test_benchmark
   shallow-clone:
     # README tells readers the offline checks work from a plain clone; checkout@v4
     # defaults to fetch-depth 1, which is exactly `git clone --depth 1`.
