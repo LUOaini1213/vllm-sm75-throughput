@@ -6,3 +6,9 @@ __pycache__/
 
 # Notebook checkpoints, for the same reason: the repro path opens the notebooks.
 .ipynb_checkpoints/
+
+# Local virtualenv and the run-time outputs of the revised clients (not results).
+.venv/
+sweep_results_v2.json
+prefix_results_v2.json
+isolate_results_v2.json

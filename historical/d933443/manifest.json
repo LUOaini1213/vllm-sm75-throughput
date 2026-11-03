@@ -12,6 +12,12 @@
       "path": "historical/d933443/quick_bench.py.txt",
       "original_path": "quick_bench.py",
       "sha256": "50304c7045d3d24678300988979b05eb06afd1973d5763cf08e3ff4c8df81947"
+    },
+    {
+      "path": "historical/d933443/isolate.py.txt",
+      "original_path": "isolate.py",
+      "sha256": "fb2c293e61794bfb2683f6a59f53b44aaba4866d3e645b527118d29a3a96332f",
+      "frozen_on": "2026-11-03: root isolate.py was moved to the serving_metrics client; until then it was an unchanged_files entry with this same hash"
     }
   ],
   "unchanged_files": [
@@ -76,10 +82,6 @@
     {
       "path": "gemm_cliff.py",
       "sha256": "259429c90bff97e4ad7a9a9c4ef6617b0f8afc8b36eeaf5ca7eb3fb6a1dff478"
-    },
-    {
-      "path": "isolate.py",
-      "sha256": "fb2c293e61794bfb2683f6a59f53b44aaba4866d3e645b527118d29a3a96332f"
     },
     {
       "path": "results_t4/corrections_2026-09-07.txt",

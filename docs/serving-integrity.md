@@ -63,7 +63,8 @@ parser SHA256 and request settings. Prefix mode changes the input, so a causal
 prefix-cache experiment still requires matched input and independently controlled
 server caching on/off. Existing historical controlled experiments remain intact.
 
-Offline checks (Python 3.11+, `aiohttp==3.14.3`; no network requests):
+Offline checks (Python 3.11+, `pip install -r requirements.txt`, which pins
+`aiohttp==3.14.3`; no network requests):
 
 ```bash
 python -B -m unittest discover -s tests -v
@@ -73,17 +74,25 @@ python -O -B verify_historical.py
 ```
 
 The historical manifest is bound by a SHA256 constant in `verify_historical.py`.
-It protects 30 existing historical files (all raw `results_t4`, notebooks, other
-source/docs/license) and two frozen script snapshots. The checker also compares
+It protects 29 existing historical files (all raw `results_t4`, notebooks, other
+source/docs/license) and three frozen script snapshots. The checker also compares
 the snapshots byte-for-byte with recorded Git source
-`d93344334567f7292099e6b7f1d661fee5f5f7b5`; that commit must be available locally
-(CI checks out history). Missing files, changed bytes, or changed manifests fail
-closed, including under optimized Python. No old metric is recomputed.
+`d93344334567f7292099e6b7f1d661fee5f5f7b5`. That comparison needs the commit in
+local history: in a shallow clone or ZIP it is reported as SKIPPED on stderr and
+the hash layer still runs; `--require-git-source` (CI, which checks out full
+history) turns the skip into a failure. Missing files, changed bytes, or changed
+manifests fail closed, including under optimized Python. No old metric is recomputed.
+
+On 2026-11-03 `isolate.py` moved to the shared client (`serving_metrics`), like
+`bench_serving.py` and `quick_bench.py` before it. Its d933443 bytes are now the
+third snapshot, `historical/d933443/isolate.py.txt` (same SHA256 the manifest
+previously recorded for `isolate.py` under `unchanged_files`), so the historical
+file count went from 30 to 29 and the snapshot count from 2 to 3.
 `.gitattributes` preserves recorded bytes instead of converting line endings on
 Windows; an existing checkout with converted line endings must restore the
 verified original files before a byte audit can pass.
 
-Three of the 30 entries were re-recorded on 2026-11-01, when the unpushed
+Three of the then 30 entries were re-recorded on 2026-11-01, when the unpushed
 2026-09-13 hardening commits were merged after this manifest:
 `cloud_sglang_vs_vllm.ipynb`, `tools_check_notebooks.py` and
 `results_t4/dip_causal_2026-09-08.txt`. Each keeps its d933443 hash under
