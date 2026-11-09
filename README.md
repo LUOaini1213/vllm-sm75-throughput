@@ -2,7 +2,7 @@
 
 [![CI](https://github.com/LUOaini1213/vllm-sm75-throughput/actions/workflows/ci.yml/badge.svg)](https://github.com/LUOaini1213/vllm-sm75-throughput/actions/workflows/ci.yml)
 
-- **做了什么**：在 GTX 1650（`sm_75`，无 Tensor Core）上部署 vLLM 0.28.0 做吞吐压测并逐个排除原因，再到 Colab Tesla T4 上做 5 组跑前写死判据的对照（GEMM、前缀复用、AWQ/GPTQ、roofline、SGLang 解码 CUDA graph）。
+- **做了什么**：在 GTX 1650（`sm_75`，无 Tensor Core）上部署 vLLM 0.28.0 做吞吐压测并逐个排除原因，再到 Colab Tesla T4 上重跑同一份 GEMM 微基准，并补了 4 轮跑前写死判据的实验（前缀复用、AWQ/GPTQ、roofline、SGLang 解码 CUDA graph）。
 - **发现一**：GTX 1650 上 fp16 `[M,896]@[896,4864]` 从 M=1 的 99.5 GiB/s 掉到 M=2 的 4.3 GiB/s（0.04×），服务吞吐从并发 1 的 119.5 掉到并发 2 的 11.0 tok/s（10.9 倍）；同一脚本在 T4 上是 0.83×。主要解释是缺 Tensor Core 时 cuBLAS 的 fp16 小 M 路径，但两次运行的 torch / CUDA / 驱动 / 系统也不同，还不是只差一个变量的对照。
 - **发现二**：SGLang 0.5.19 按显存档位把 T4 的解码 CUDA graph 上限写死为 8；显式 `--cuda-graph-max-bs-decode 32` 后 batch 32 的 TPOT 从 35.74 降到 10.26 ms（3.48×，旧客户端按内容片段计数的历史近似值）。
 - **证据边界**：T4 侧每个数字都有 `results_t4/` 原始文件，CI 里的 `check_claims.py` 逐个回算；GTX 1650 侧（第一～五节）只有 `--enforce-eager` 那一轮的原始 JSON，其余是 2026-09-02 那次运行的 README 转录，原始日志没有留下。
