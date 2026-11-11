@@ -514,6 +514,10 @@ def check_first_screen(readme, nbd):
 
     bad = [p for p in OVERCLAIMS if p in readme]  # 更正文件按原话引用它们，不算
     ok(not bad, "README 不再出现超出证据的说法%s" % (("：" + "、".join(bad)) if bad else ""))
+    local_note = read(os.path.join("results_local", "README.md"))
+    bad = [p for p in OVERCLAIMS + ["做过带产物的受控对照"] if p in local_note]
+    ok(not bad and "不是只差一个变量的受控对照" in local_note,
+       "results_local/README.md 同样不把 GTX 1650 → T4 说成受控对照%s" % (("：" + "、".join(bad)) if bad else ""))
 
     # 版本差异：README 写的版本要与产物一致
     t4_ver = re.match(r"Tesla T4 \| sm_75 \| (\d+) SM \| .*torch (\S+)", g)
