@@ -15,8 +15,29 @@ jobs:
       - uses: actions/setup-python@v5
         with:
           python-version: ${{ matrix.python-version }}
-      - run: python -m pip install aiohttp==3.14.3
+      - run: python -m pip install -r requirements.txt
       - run: python -B -m unittest discover -s tests -v
       - run: python -O -B -m unittest discover -s tests -v
-      - run: python -B verify_historical.py
-      - run: python -O -B verify_historical.py
+      - run: python -B verify_historical.py --require-git-source
+      - run: python -O -B verify_historical.py --require-git-source
+      - name: 2026-09-18 exercise client tests (need aiohttp)
+        working-directory: streaming_accounting_20260918
+        run: python -B -m unittest -v test_benchmark
+  shallow-clone:
+    # README tells readers the offline checks work from a plain clone; checkout@v4
+    # defaults to fetch-depth 1, which is exactly `git clone --depth 1`.
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - run: python -m pip install -r requirements.txt
+      - run: python -B -m unittest discover -s tests -v
+      - name: hash layer passes, git-source layer is reported as SKIPPED
+        run: python -B verify_historical.py 2>stderr.txt && grep -q "SKIPPED git-source comparison" stderr.txt
+      - name: --require-git-source still fails closed without history
+        run: |
+          set +e
+          python -B verify_historical.py --require-git-source
+          test $? -eq 2

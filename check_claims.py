@@ -2,7 +2,7 @@
 """把 README 里的每个数字从产物里回算一遍。纯 CPU、纯标准库，不需要 GPU。
 
 这仓的测量全在 Colab T4 上做，GPU 那部分进不了 CI。能进 CI 的是另一半：
-**日志解析 + 数字回算**。本脚本做九组检查：
+**日志解析 + 数字回算**。本脚本做十一组检查：
 
   1  口径     probe.py / 旧 bench_serving.py（冻结副本）的 max_tokens 与请求数公式没被改过
   2  双来源   notebook 的真实 cell 输出 与 results_t4/*.txt 的转写逐格一致
@@ -13,6 +13,8 @@
   7  GEMM     README 第一屏那张 T4 对照表 对 results_t4/t4_gemm_control.txt
   8  本地     README 第二节的表自洽，且 results_local/ 那份 JSON 的归属可证
   9  引用     README 里提到的每个仓内文件真的存在，notebook 表不缺行
+ 10  第一屏   一览里的数字由产物回算；版本差异与「转录」说明在场；超出证据的措辞不得出现
+ 11  带宽     第三节由突发表换算的每步耗时与带宽区间
 
 第 4 组有三个已知离群格（A_default@4、A_default@32、D_default_backend@4），
 写在 WHITELIST 里，每条都要给理由。白名单是双向的：这些格子如果哪天不再离群，
@@ -286,7 +288,7 @@ def check_readme_ratios(readme, nbd):
 
     # 导航块与正文里出现的绝对值
     ok("608.0 → 2690.2 tok/s" in readme,
-       "README 写出了 608.0 → 2690.2 的绝对值（面试官会 Ctrl+F 这个数）")
+       "README 写出了 608.0 → 2690.2 的绝对值（读者会 Ctrl+F 这个数）")
     ok(close(a[32]["tpot"], 35.74, 1e-9) and close(c[32]["tpot"], 10.26, 1e-9),
        "导航块里的 35.74 → 10.26 ms 与 notebook 输出一致")
 
@@ -329,8 +331,8 @@ def check_corrections(readme, nbd):
 
     # 2026-09-18 流式计数更正：旧客户端按非空内容片段计数，倍数只是历史近似统计量。
     # 更正说明必须留在第一屏，导航块与第 D 节的 3.48× 旁边都要写明不是纯优化收益。
-    ok("2026-09-18 流式计数更正" in "\n".join(readme.split("\n")[:5]),
-       "README 前 5 行保留 2026-09-18 流式计数更正")
+    ok("2026-09-18 流式计数更正" in readme.split("\n## ", 1)[0],
+       "README 第一屏（第一个二级标题之前）保留 2026-09-18 流式计数更正")
     nav = readme.split("## 本仓两条主线", 1)[-1].split("\n---", 1)[0]
     ok("只是历史近似统计量，不是纯优化收益" in nav, "导航块写明 3.48× / 4.42× 不是纯优化收益")
     sec_d = readme.split("batch 32 以 TPOT 口径 3.48× 为准", 1)[-1].split("**仍未做**", 1)[0]
@@ -471,7 +473,99 @@ def check_refs(readme):
        "README 写的份数与实际 %d 份一致" % len(have))
 
 
+# ------------------------------------------------- 10 第一屏与措辞边界
+CORR_1103 = os.path.join("results_t4", "corrections_2026-11-03.txt")
+STREAM_MANIFEST = os.path.join("streaming_accounting_20260918", "evidence",
+                               "local_20260918T054433Z", "manifest.json")
+# 2026-11-03 起这些说法超出证据：两卡的 torch/CUDA/驱动/系统/SM 数都不同，
+# 所以 GTX 1650 → T4 不是只差 Tensor Core 一个变量的受控对照。
+OVERCLAIMS = ["唯一差别", "控制变量唯有", "已由受控对照实验确认", "Tesla T4 受控对照",
+              "only one variable", "One variable differs"]
+
+
+def check_first_screen(readme, nbd):
+    print("[10] 第一屏一览的数字、版本差异与「转录」说明")
+    head = readme.split("> **2026-09-18 流式计数更正", 1)[0]
+    bullets = [l for l in head.split("\n") if l.startswith("- ")]
+    ok(5 <= len(bullets) <= 8, "第一屏一览 %d 行（5–8 行）" % len(bullets))
+
+    g = read(GEMM)
+    m = re.search(r"GTX 1650（无 TC）fp16 MLP gate/up：M=1 ([\d.]+) → M=2 ([\d.]+) GiB/s", g)
+    t4 = re.search(r"^\s*2\s+([\d.]+)\s+([\d.]+)×", g, re.M)
+    body2 = readme.split("## 二、异常", 1)[1].split("## 三、", 1)[0]
+    r1 = re.search(r"^\|\s*1\s*\|[^|]*\|\s*([\d.]+)\s*\|", body2, re.M)
+    r2 = re.search(r"^\|\s*2\s*\|[^|]*\|\s*\**([\d.]+)\**\s*\|", body2, re.M)
+    ok(all([m, t4, r1, r2]), "解析出 GEMM 结论段、T4 M=2 行、第二节并发 1/2 两行")
+    if not all([m, t4, r1, r2]):
+        return
+    g1, g2 = float(m.group(1)), float(m.group(2))
+    s1, s2 = float(r1.group(1)), float(r2.group(1))
+    a, c = nbd["A_default"][32]["tpot"], nbd["C_maxbs32"][32]["tpot"]
+    want = ["%.1f GiB/s" % g1, "%.1f GiB/s" % g2, "（%.2f×）" % (g2 / g1),
+            "%.1f 掉到并发 2 的 %.1f tok/s" % (s1, s2), "（%.1f 倍）" % (s1 / s2),
+            "T4 上是 %s×" % t4.group(2), "从 %.2f 降到 %.2f ms（%.2f×" % (a, c, a / c)]
+    for w in want:
+        ok(w in head, "一览里的「%s」由产物回算得到" % w)
+    ok(("%.1fx" % (s1 / s2)) in head and ("%.2fx" % (a / c)) in head,
+       "英文一览里的 %.1fx / %.2fx 同样回算" % (s1 / s2, a / c))
+    ok(("掉约 **%d 倍**（%.1f → %.1f GiB/s）" % (round(g1 / g2), g1, g2)) in readme
+       and ("掉 **%.1f 倍**" % (s1 / s2)) in readme,
+       "正文开头把 %.1f 倍（服务吞吐）与约 %d 倍（GEMM 带宽）分开写" % (s1 / s2, round(g1 / g2)))
+
+    bad = [p for p in OVERCLAIMS if p in readme]  # 更正文件按原话引用它们，不算
+    ok(not bad, "README 不再出现超出证据的说法%s" % (("：" + "、".join(bad)) if bad else ""))
+    local_note = read(os.path.join("results_local", "README.md"))
+    bad = [p for p in OVERCLAIMS + ["做过带产物的受控对照"] if p in local_note]
+    ok(not bad and "不是只差一个变量的受控对照" in local_note,
+       "results_local/README.md 同样不把 GTX 1650 → T4 说成受控对照%s" % (("：" + "、".join(bad)) if bad else ""))
+
+    # 版本差异：README 写的版本要与产物一致
+    t4_ver = re.match(r"Tesla T4 \| sm_75 \| (\d+) SM \| .*torch (\S+)", g)
+    stream = json.load(io.open(os.path.join(HERE, STREAM_MANIFEST), encoding="utf-8"))
+    corr = read(CORR_1103)
+    ok(t4_ver is not None and stream.get("torch") == "2.13.0+cu130"
+       and "Driver Version: 592.82" in stream["nvidia_smi_before"]["stdout"],
+       "T4 版本取自 t4_gemm_control.txt 第 1 行，GTX 1650 版本与 2026-09-18 manifest 一致")
+    if t4_ver:
+        line = "torch（%s 对 %s）" % (stream.get("torch"), t4_ver.group(2))
+        ok(line in readme, "README 第一屏写出「%s」" % line)
+        ok("SM 数（14 对 %s）" % t4_ver.group(1) in readme, "README 写出 SM 数 14 对 %s" % t4_ver.group(1))
+        ok(re.search(r"torch\s+%s\s+%s" % (re.escape(stream.get("torch")), re.escape(t4_ver.group(2))), corr)
+           is not None, "corrections_2026-11-03.txt 的版本表与两份产物一致")
+    for need in ["第一～五节的数字是 2026-09-02 那次本地运行的转录",
+                 "GTX 1650 一行是 2026-09-02 运行的转录",
+                 "不是只差一个变量的受控对照"]:
+        ok(need in readme, "README 写明「%s」" % need)
+
+
+# ------------------------------------------------- 11 第三节的带宽换算
+def check_bandwidth(readme):
+    print("[11] 第三节：突发表 → 每步耗时 → 权重带宽")
+    sec = readme.split("**纯稳态突发测试**", 1)[1].split("**墙钟从", 1)[0]
+    rows = {}
+    for line in sec.split("\n"):
+        if line.startswith("|") and "---" not in line and "一次性并发" not in line:
+            v = floats(line.replace("**", ""))
+            rows[int(v[0])] = dict(wall=v[1], tput=v[2], tpot=v[3])
+    ok(sorted(rows) == [1, 2, 3, 4, 8, 16], "突发表并发列 %s" % sorted(rows))
+    n_tok = 64  # 旧 isolate.py 的 burst(n, n_tok=64)
+    frozen = read(os.path.join("historical", "d933443", "isolate.py.txt"))
+    ok("n_tok=64" in frozen, "冻结的旧 isolate.py 每请求 max_tokens = 64")
+    step1 = rows[1]["wall"] / n_tok * 1e3
+    lo = rows[16]["wall"] / n_tok * 1e3
+    hi = max(r["tpot"] for n, r in rows.items() if n >= 2)
+    bw1, bw_lo, bw_hi = 1e3 / step1, 1e3 / hi, 1e3 / lo
+    for w in ["≈ %.1f ms/step" % step1, "约 %d GB/s" % round(bw1, -1),
+              "%d ms（墙钟 %.2f s ÷ 64" % (round(lo), rows[16]["wall"]),
+              "上沿 %.2f ms" % hi, "约 %.1f–%.1f GB/s" % (bw_lo, bw_hi),
+              "%d–%d%%" % (round(bw_lo / bw1 * 100), round(bw_hi / bw1 * 100))]:
+        ok(w in readme, "第三节写的「%s」与突发表回算一致" % w)
+
+
 def main():
+    if hasattr(sys.stdout, "reconfigure"):
+        # 非 UTF-8 的 Windows 控制台/管道里打印中文不至于 UnicodeEncodeError
+        sys.stdout.reconfigure(encoding="utf-8", errors="replace")
     print("check_claims.py —— 从产物回算 README 里的数字（纯 CPU）")
     print("=" * 72)
     readme = read("README.md")
@@ -485,6 +579,8 @@ def main():
     check_gemm(readme)
     check_local(readme)
     check_refs(readme)
+    check_first_screen(readme, nbd)
+    check_bandwidth(readme)
     print("=" * 72)
     for n in NOTES:
         print("    note " + n)

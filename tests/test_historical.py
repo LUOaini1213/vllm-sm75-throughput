@@ -4,17 +4,47 @@ import shutil
 import tempfile
 import unittest
 
-from verify_historical import MANIFEST, verify_history
+import contextlib
+import io
+from unittest.mock import patch
+
+import verify_historical
+from verify_historical import MANIFEST, verify_history, source_commit_available
 
 ROOT = Path(__file__).resolve().parents[1]
 
 
 class HistoricalTests(unittest.TestCase):
+    SOURCE = "d93344334567f7292099e6b7f1d661fee5f5f7b5"
+
+    @unittest.skipUnless(source_commit_available(ROOT, SOURCE),
+                         "source commit not in local history (shallow clone); CI runs this with full history")
     def test_original_bytes_and_historical_files(self):
         result = verify_history(ROOT, git_source=True)
-        self.assertEqual(result["frozen_scripts"], 2)
-        self.assertEqual(result["unchanged_historical_files"], 30)
-        self.assertEqual(result["source_commit"], "d93344334567f7292099e6b7f1d661fee5f5f7b5")
+        self.assertEqual(result["frozen_scripts"], 3)
+        self.assertEqual(result["unchanged_historical_files"], 29)
+        self.assertEqual(result["source_commit"], self.SOURCE)
+
+    def test_hash_layer_counts_without_git(self):
+        result = verify_history(ROOT)
+        self.assertEqual((result["frozen_scripts"], result["unchanged_historical_files"]), (3, 29))
+        self.assertFalse(result["git_source_checked"])
+
+    def test_isolate_snapshot_is_the_old_chunk_counting_client(self):
+        frozen = (ROOT / "historical/d933443/isolate.py.txt").read_text(encoding="utf-8")
+        self.assertIn("n+=1", frozen)
+        self.assertNotIn("serving_metrics", frozen)
+        self.assertIn("measure_request", (ROOT / "isolate.py").read_text(encoding="utf-8"))
+
+    def test_shallow_clone_skips_git_layer_unless_required(self):
+        err = io.StringIO()
+        with patch.object(verify_historical, "source_commit_available", return_value=False), \
+                contextlib.redirect_stdout(io.StringIO()) as out, contextlib.redirect_stderr(err):
+            self.assertEqual(verify_historical.main([]), 0)
+            self.assertIn("SKIPPED git-source comparison", err.getvalue())
+            self.assertIn('"git_source_checked": false', out.getvalue())
+            self.assertEqual(verify_historical.main(["--require-git-source"]), 2)
+            self.assertIn("not in local history", err.getvalue())
 
     def make_copy(self, target):
         manifest = json.loads((ROOT / MANIFEST).read_text(encoding="utf-8"))

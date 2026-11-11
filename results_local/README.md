@@ -33,5 +33,6 @@
 `cloud_dip_confirm_executed.ipynb` 这份带真实 cell 输出的 notebook。
 
 结论层面这个缺口是可补的：`gemm_cliff.py` 在任何一张无 Tensor Core 的 `sm_75` 卡上都能复跑，
-归因本身也已经在 T4 上做过带产物的受控对照（`results_t4/t4_gemm_control.txt`）。
+T4 一侧也有带产物的对照运行（`results_t4/t4_gemm_control.txt`）。那次对照的 torch / CUDA / 驱动 / 系统
+与 GTX 1650 这边也不同，不是只差一个变量的受控对照，见 `results_t4/corrections_2026-11-03.txt`。
 不可回查的是 **2026-09-02 那一次运行本身**。

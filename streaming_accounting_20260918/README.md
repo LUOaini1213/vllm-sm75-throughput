@@ -1,6 +1,6 @@
-# 宁德训推岗位补强：可追溯的流式测量与服务验收
+# 可追溯的流式测量与服务验收（2026-09-18 补充练习）
 
-本目录是 2026-09-18 新做的工程练习，建立在既有 vLLM / SGLang 单卡实验上。新增实现与证据留在本目录，既有实验日志和 notebook 没有被覆盖；仓库根 README 的历史计数口径由主任务另行同步。最终结果见 `RESULTS.md` 与 `evidence/summary.json`。
+本目录是 2026-09-18 新做的工程练习，建立在既有 vLLM / SGLang 单卡实验上。新增实现与证据留在本目录，既有实验日志和 notebook 没有被覆盖；仓库根 README 的历史计数口径见其顶部的 2026-09-18 更正。最终结果见 `RESULTS.md` 与 `evidence/summary.json`。
 
 实跑完成：两种精度共 **96/96 请求**、**3072 个输出 token** 双来源计数一致，**10/10 异常及恢复探测**通过；独立 generate API 同参数 **4/4** token 序列一致；7 项客户端边界测试通过。固定小题的严格匹配仅 **3/16（两种精度相同）**，保留失败与低分，不把吞吐成功当成业务准确率。
 
@@ -25,7 +25,7 @@
 另建 `reference_service.py`，复用同一缓存权重，在 Transformers eager 路径运行真实生成。这个参考服务串行处理生成，客户端并发请求会在服务内排队；它用于验证协议、token 指标、错误恢复和精度对照，**不是 vLLM 性能复现，也没有 continuous batching**。context 限制为 512；两种精度仅在对应实际成功证据生成后计为完成。
 
 ```bash
-cd /mnt/c/Users/LW/Desktop/求职/04_作品与代码/vllm-sm75-throughput/catl_strengthening_20260918
+cd streaming_accounting_20260918   # 在仓库根目录下；以下命令用的是 WSL 里事先建好的 vLLM 0.28.0 venv
 /root/vllmbench/.venv/bin/python -m unittest -v test_benchmark.py
 /root/vllmbench/.venv/bin/python audit_history.py
 /root/vllmbench/.venv/bin/python -u run_local.py --backend transformers-reference
@@ -47,12 +47,12 @@ python quality_eval.py --url http://127.0.0.1:8018/v1/chat/completions \
 
 `quality_eval.compare(paths)` 拒绝混用不同数据集哈希；相同提示仍须相同模型家族、版本、生成配置及任务定义才可归因到量化。16 道自建小题只是端到端冒烟检查，不能叫行业准确率、量化无损或模型能力验证。文本完全一致率也不等于任务准确率。
 
-## 仍缺少的岗位证据
+## 尚未覆盖的范围
 
 - 多 GPU / 分布式训练或推理、通信优化、异构集群资源调度尚未实做。
 - 没有本轮 INT4 QAT / 新量化算法实现；旧 AWQ、GPTQ 是加载已有社区量化权重的对照。
 - 没有本轮公开大规模任务基准、长上下文负载、持续生产流量、故障注入平台、正式 SLO 运维。
-- 该练习为 AI 辅助实现，面试要能独立解释代码、指标与失败诊断；不能把工具产出直接等同于本人已熟练掌握。
+- 该练习为 AI 辅助实现。
 
 ## 文件
 
@@ -65,4 +65,4 @@ python quality_eval.py --url http://127.0.0.1:8018/v1/chat/completions \
 - `audit_history.py`：旧结果复算，显式区分旧测量与新分析。
 - `analyze_results.py`：验证完整原始结果后生成报告，未完成实验时拒绝生成性能报告。
 - `inventory_model.py`：已缓存权重与配置哈希，不下载模型。
-- `evidence/`：真实运行日志、原始请求、清理结果与复算数据。
+- `evidence/`：真实运行日志、原始请求、清理结果与复算数据。三份文件里的本机绝对路径已替换为 `<repo>/`，见 [`evidence/REDACTIONS.md`](evidence/REDACTIONS.md)。
